@@ -8,6 +8,7 @@ window.onload = function () {
 
 // Global variable
 let currentTabId = "tabA";
+let currentTextAreaStr = "";
 
 // Create a button element
 const button = document.createElement("button");
@@ -22,6 +23,48 @@ img.style.width = "150px";
 img.style.height = "150px";
 
 button.appendChild(img);
+
+const umixFinalContainer = document.createElement('div');
+umixFinalContainer.className = "umix-final-container";
+
+const umixAIContainer = document.createElement('div');
+umixAIContainer.className = "umix-ai-container";
+
+const aiTitle = document.createElement('div');
+aiTitle.className = "umix-content-title umix-ai-title";
+aiTitle.innerText = "AI Editor";
+
+const selectAIField = document.createElement("select");
+selectAIField.setAttribute("name", "select-ai-field");
+selectAIField.setAttribute("id", "select-ai-field");
+selectAIField.className = "umix-select";
+
+const optionCss = document.createElement("option");
+optionCss.setAttribute("value", "css");
+optionCss.setAttribute("name", "css");
+optionCss.innerText = "css";
+const optionJs = document.createElement("option");
+optionJs.setAttribute("value", "javascript");
+optionJs.setAttribute("name", "javascript");
+optionJs.innerText = "javascript";
+
+selectAIField.appendChild(optionCss);
+selectAIField.appendChild(optionJs);
+
+const aiDescription = document.createElement('textarea');
+aiDescription.setAttribute("id", "ai-description");
+aiDescription.setAttribute("rows", 6);
+aiDescription.setAttribute("cols", 35);
+aiDescription.className = "umix-textarea";
+
+const generateAIBtn = document.createElement('button');
+generateAIBtn.className = "umix-create-btn umix-ai-generate-btn";
+generateAIBtn.innerText = "Generate";
+
+umixAIContainer.appendChild(aiTitle);
+umixAIContainer.appendChild(selectAIField);
+umixAIContainer.appendChild(aiDescription);
+umixAIContainer.appendChild(generateAIBtn);
 
 const umixTotalContainer = document.createElement('div');
 umixTotalContainer.className = "umix-total-container";
@@ -113,78 +156,93 @@ const tabContentA = document.createElement('div');
 tabContentA.className = "umix-tab-content";
 tabContentA.setAttribute("id", "tabA");
 
-const tabACssLabel = document.createElement('div');
-tabACssLabel.className = "umix-textarea-label";
-tabACssLabel.innerText = "css";
+const selectTabA = document.createElement("select");
+selectTabA.setAttribute("name", "select-tabA");
+selectTabA.setAttribute("id", "select-tabA");
+selectTabA.className = "umix-select";
 
-const textAreaCssA = document.createElement('textarea');
-textAreaCssA.setAttribute("id", "cssA");
-textAreaCssA.setAttribute("rows", 6);
-textAreaCssA.setAttribute("cols", 35);
-textAreaCssA.className = "umix-textarea";
+const optionCssA = document.createElement("option");
+optionCssA.setAttribute("value", "css");
+optionCssA.setAttribute("name", "css");
+optionCssA.innerText = "css";
+const optionJsA = document.createElement("option");
+optionJsA.setAttribute("value", "javascript");
+optionJsA.setAttribute("name", "javascript");
+optionJsA.innerText = "javascript";
 
-const tabAJsLabel = document.createElement('div');
-tabAJsLabel.className = "umix-textarea-label";
-tabAJsLabel.innerText = "Javascript";
+selectTabA.appendChild(optionCssA);
+selectTabA.appendChild(optionJsA);
 
-const textAreaJsA = document.createElement('textarea');
-textAreaJsA.setAttribute("id", "jsA");
-textAreaJsA.setAttribute("rows", 6);
-textAreaJsA.setAttribute("cols", 35);
-textAreaJsA.className = "umix-textarea";
+const textAreaA = document.createElement('textarea');
+textAreaA.setAttribute("id", "cssA");
+textAreaA.setAttribute("rows", 6);
+textAreaA.setAttribute("cols", 35);
+textAreaA.className = "umix-textarea";
 
 const tabContentB = document.createElement('div');
 tabContentB.className = "umix-tab-content";
 tabContentB.setAttribute("id", "tabB");
 
-const tabBCssLabel = document.createElement('div');
-tabBCssLabel.className = "umix-textarea-label";
-tabBCssLabel.innerText = "css";
+const selectTabB = document.createElement("select");
+selectTabB.setAttribute("name", "select-tabB");
+selectTabB.setAttribute("id", "select-tabB");
+selectTabB.className = "umix-select"
 
-const textAreaCssB = document.createElement('textarea');
-textAreaCssB.setAttribute("id", "cssB");
-textAreaCssB.setAttribute("rows", 6);
-textAreaCssB.setAttribute("cols", 35);
-textAreaCssB.className = "umix-textarea";
+const optionCssB = document.createElement("option");
+optionCssB.setAttribute("value", "css");
+optionCssB.setAttribute("name", "css");
+optionCssB.innerText = "css";
+const optionJsB = document.createElement("option");
+optionJsB.setAttribute("value", "javascript");
+optionJsB.setAttribute("name", "javascript");
+optionJsB.innerText = "javascript"
 
-const tabBJsLabel = document.createElement('div');
-tabBJsLabel.className = "umix-textarea-label";
-tabBJsLabel.innerText = "Javascript";
+selectTabB.appendChild(optionCssB);
+selectTabB.appendChild(optionJsB);
 
-const textAreaJsB = document.createElement('textarea');
-textAreaJsB.setAttribute("id", "jsB");
-textAreaJsB.setAttribute("rows", 6);
-textAreaJsB.setAttribute("cols", 35);
-textAreaJsB.className = "umix-textarea";
+const textAreaB = document.createElement('textarea');
+textAreaB.setAttribute("id", "cssA");
+textAreaB.setAttribute("rows", 6);
+textAreaB.setAttribute("cols", 35);
+textAreaB.className = "umix-textarea";
 
-tabContentA.appendChild(tabACssLabel);
-tabContentA.appendChild(textAreaCssA);
-tabContentA.appendChild(tabAJsLabel);
-tabContentA.appendChild(textAreaJsA);
+tabContentA.appendChild(selectTabA);
+tabContentA.appendChild(textAreaA);
 
-tabContentB.appendChild(tabBCssLabel);
-tabContentB.appendChild(textAreaCssB);
-tabContentB.appendChild(tabBJsLabel);
-tabContentB.appendChild(textAreaJsB);
+tabContentB.appendChild(selectTabB);
+tabContentB.appendChild(textAreaB);
 
 tab.appendChild(tabContentA);
 tab.appendChild(tabContentB);
+
+const buttonGroup = document.createElement('div');
+buttonGroup.className = "umix-button-group";
+
+const changeUIBtn = document.createElement('button');
+changeUIBtn.className = "umix-create-btn";
+changeUIBtn.innerText = "Change Website";
 
 const createBtn = document.createElement('button');
 createBtn.className = "umix-create-btn";
 createBtn.innerText = "Create A/B Test";
 
+buttonGroup.appendChild(changeUIBtn);
+buttonGroup.appendChild(createBtn);
+
 contentContainer.appendChild(contentTitle);
 contentContainer.appendChild(label);
 contentContainer.appendChild(inputTitle);
 contentContainer.appendChild(tab);
-contentContainer.appendChild(createBtn);
+contentContainer.appendChild(buttonGroup);
 contentContainer.appendChild(flyingBtn);
 
 umixTotalContainer.appendChild(toolbarContainer);
 umixTotalContainer.appendChild(contentContainer);
 
-document.body.appendChild(umixTotalContainer);
+umixFinalContainer.appendChild(umixAIContainer);
+umixFinalContainer.appendChild(umixTotalContainer);
+
+document.body.appendChild(umixFinalContainer);
 
 let isOn = false;
 
@@ -212,8 +270,28 @@ function openTab(event, target, flag) {
         event.currentTarget.className += " active";
 }
 
-textAreaCssA.addEventListener("change", function () {
+// Appends CSS content to the head of the site
+const appendCSS = s => document.head.appendChild(document.createElement("style")).innerHTML = s;
 
+textAreaA.addEventListener("input", function (event) {
+    currentTextAreaStr = event.target.value;
+}, false);
+
+changeUIBtn.addEventListener("click", function () {
+    let currentSelectedField = selectTabA.options[selectTabA.selectedIndex].text;
+    if (currentSelectedField === "css") {
+        appendCSS(currentTextAreaStr);
+    } else if (currentSelectedField === "javascript") {
+        let appendScript = document.createElement('script');
+        appendScript.type = 'text/javascript';
+        try {
+            appendScript.appendChild(document.createTextNode(currentTextAreaStr));
+            document.body.appendChild(appendScript);
+        } catch (e) {
+            appendScript.text = currentSelectedField;
+            document.body.appendChild(appendScript);
+        }
+    }
 }, false);
 
 img.addEventListener("click", function () {
@@ -277,17 +355,39 @@ document.head.appendChild(document.createElement("style")).innerHTML = `body {
     outline: 2px dashed rgb(65, 134, 246)  !important;
     background-color: rgba(65, 134, 246, 0.2) !important;
   }
-  
-  .umix-total-container {
+  .umix-final-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: start;
     position: fixed;
     top: 10px;
     right: 10px;
+  }
+  .umix-ai-container {
+    width: 35%;
+    margin-right: 60px;
+    margin-top: 80px;
+    padding: 25px 15px;
+    background-color: #fff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 5px;
+    background: rgba(192, 192, 192, 0.6);
+  }
+  .umix-total-container {
+    width: 40%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: end;
   }
-  
+  .umix-ai-title {
+    margin-bottom: 10px;
+  }
+  .umix-ai-generate-btn {
+    margin-top: 10px;
+  }
   .umix-toolbar-container {
     display: flex;
     justify-content: center;
@@ -349,7 +449,7 @@ document.head.appendChild(document.createElement("style")).innerHTML = `body {
     position: absolute;
     width: 40px;
     height: 40px;
-    top: 40%;
+    top: 50%;
     right: 10px;
     display: flex;
     justify-content: center;
@@ -434,15 +534,16 @@ document.head.appendChild(document.createElement("style")).innerHTML = `body {
         background-color: black;
     }
   }
+  .umix-select {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
   .umix-textarea {
     border-radius: 5px;
     border-color: gray;
     background: gainsboro;
-  }
-  .umix-textarea-label {
-    font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 5px;
+    width: 100%;
   }
   .umix-tab-content {
     -webkit-animation: fadeEffect 1s;
@@ -451,6 +552,7 @@ document.head.appendChild(document.createElement("style")).innerHTML = `body {
   }
   .umix-create-btn {
     position: relative;
+    margin-bottom: 10px;
     width: 100%;
     padding: 5px 20px;
     height: 40px;
