@@ -294,6 +294,30 @@ changeUIBtn.addEventListener("click", function () {
     }
 }, false);
 
+createBtn.addEventListener('click', function () {
+    if (inputTitle.value && currentTextAreaStr) {
+        fetch("https://api.croboost.ai/v1/ab/tests/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer eyJraWQiOiI5dlJtS2EyNXJCZlBtQXdGRWhKeVp5TXpNVzNaRVE4XC81UHo0QzhmWk5IYz0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxYTRmNjI2ZS03YWEyLTQyNzUtYWYxZi0yZDg1YzdiMGEzNTIiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9WYTk4UnNBbU4iLCJjbGllbnRfaWQiOiI1cTJoY3FnMDhwdXQyOHNpazE4ZjZpaWpubyIsIm9yaWdpbl9qdGkiOiJlNWI5ZGQwNi1hZjhiLTRjMDQtOTBmNi0xZTFlZWU3ZWFmMWUiLCJldmVudF9pZCI6Ijk1MDM5NjAyLWJlNTktNGQzMi1hYjY3LTU2NjM1ZGYxZDhkYSIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2OTc2NDM4NDUsImV4cCI6MTY5NzY0NzQ0NSwiaWF0IjoxNjk3NjQzODQ1LCJqdGkiOiIxMmY1ZjljMS03ZmQ5LTRmMDQtOGRlYy03Y2FiMzU0YjI1ZWIiLCJ1c2VybmFtZSI6IjFhNGY2MjZlLTdhYTItNDI3NS1hZjFmLTJkODVjN2IwYTM1MiJ9.dbpwdW9Rox_DGBtJqfRo1HLwj-MyDPLLrt8g-fQfkdK5UCUo6csLxjD_Qyakh9QvqiIUke9NFRJP6HyGhEYWxVn9pexir0CBUhFz5SxgcbYLicZ0yo8vs_kLzWA9NyVQ7sx_WxuqbH9btSLo7VyS1UBhcMF2vJXum7Y0LEB8s-lweTXQLCrexRH__a8rhXQCTA8aVQIRskWVv7QlfRzXKa7-ZdMjdyl-S2Im83lYMPehM1vLizPKQIWAxeNr56MGFZP3orkStsZW3PyVs7BM0ZwUNeJD3fZ-V-RQZJiNTj6Gb1BlbqXYrPl0PgkZh62tY7wmbuVEwPask-8MBCypFQ"
+            },
+            body: JSON.stringify({
+                title: inputTitle.value,
+                data: currentTextAreaStr,
+                is_live: false
+            }),
+        })
+            .then((response) => response.json()) // Convert the response to JSON
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+}, false);
+
 img.addEventListener("click", function () {
     const currentToggle = localStorage.getItem("toggle");
     localStorage.setItem("toggle", currentToggle === "true" ? "false" : "true");
