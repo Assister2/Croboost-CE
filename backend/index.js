@@ -24,7 +24,7 @@ const tools = [
 ];
 
 app.post('/css', async (req, res) => {
-    const {css, description} = req.body;
+    const {html, description} = req.body;
     const executor = await initializeAgentExecutorWithOptions(tools, model, {
         agentType: "zero-shot-react-description",
         verbose: true,
@@ -36,7 +36,7 @@ app.post('/css', async (req, res) => {
         // 2. In the final output, only include the raw CSS — NOTHING else.
         
         ## Input
-        HTML: ${css}
+        HTML: ${html}
         Task: ${description}
         // The output MUST be CSS and CSS only — no text`;
 
@@ -44,8 +44,8 @@ app.post('/css', async (req, res) => {
     res.json({output: result});
 });
 
-app.post('/js', async (req, res) => {
-    const {js, description} = req.body;
+app.post('/javascript', async (req, res) => {
+    const {html, description} = req.body;
     const executor = await initializeAgentExecutorWithOptions(tools, model, {
         agentType: "zero-shot-react-description",
         verbose: true,
@@ -57,7 +57,7 @@ app.post('/js', async (req, res) => {
         // 2. In the final output, only include the raw javascript — NOTHING else.
         
         ## Input
-        HTML: ${js}
+        HTML: ${html}
         Task: ${description}
         // The output MUST be javascript and javascript only — no text`;
 

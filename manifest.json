@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Umix",
+    "name": "Croboost",
     "description": "Lets you remix pages from all over the internet",
     "version": "1.0",
     "permissions": [
