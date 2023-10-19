@@ -1,30 +1,31 @@
 const oai = require("openai");
 const express = require('express');
 const cors = require('cors'); // Import cors middleware
+const bodyParser = require('body-parser');
 const { OpenAI } = require("langchain/llms/openai");
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 const { WebBrowser } = require("langchain/tools/webbrowser");
 const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
 const { initializeAgentExecutorWithOptions } = require("langchain/agents");
 const app = express();
-
 // load dotenv
 require("dotenv").config();
 
-
 const port = process.env.PORT;
 
-const embeddings = new OpenAIEmbeddings();
-const model = new OpenAI({ modelName: "gpt-4", temperature: 0});
+const embeddings = new OpenAIEmbeddings({openAIApiKey: process.env.api_key});
+const model = new OpenAI({ modelName: "gpt-4", temperature: 0, maxTokens: 2000, openAIApiKey: process.env.API_KEY});
 const tools = [
     new WebBrowser({ model, embeddings }),
 ];
 
-
 app.use(express.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: "*" }));
 
 app.post('/edit', async (req, res) => {
+    console.log(req.body);
     const { html, edit } = req.body;
     console.log({html, edit});
     const executor = await initializeAgentExecutorWithOptions(tools, model, {

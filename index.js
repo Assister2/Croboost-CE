@@ -386,6 +386,7 @@ document.head.appendChild(document.createElement("style")).innerHTML = `body {
     position: fixed;
     top: 10px;
     right: 10px;
+    z-index: 99999;
   }
   .umix-ai-container {
     width: 35%;
@@ -588,6 +589,7 @@ document.head.appendChild(document.createElement("style")).innerHTML = `body {
     text-decoration: none;
     overflow: hidden;
     font-weight: 600;
+    text-align: center;
     color: white;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
