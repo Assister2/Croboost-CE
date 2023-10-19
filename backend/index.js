@@ -2,55 +2,66 @@ const oai = require("openai");
 const express = require('express');
 const cors = require('cors'); // Import cors middleware
 const bodyParser = require('body-parser');
-const { OpenAI } = require("langchain/llms/openai");
-const { ChatOpenAI } = require("langchain/chat_models/openai");
-const { WebBrowser } = require("langchain/tools/webbrowser");
-const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
-const { initializeAgentExecutorWithOptions } = require("langchain/agents");
+const {OpenAI} = require("langchain/llms/openai");
+const {ChatOpenAI} = require("langchain/chat_models/openai");
+const {WebBrowser} = require("langchain/tools/webbrowser");
+const {OpenAIEmbeddings} = require("langchain/embeddings/openai");
+const {initializeAgentExecutorWithOptions} = require("langchain/agents");
+
 const app = express();
-// load dotenv
 require("dotenv").config();
 
 const port = process.env.PORT;
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cors({origin: "*"}));
+
 const embeddings = new OpenAIEmbeddings({openAIApiKey: process.env.api_key});
-const model = new OpenAI({ modelName: "gpt-4", temperature: 0, maxTokens: 2000, openAIApiKey: process.env.API_KEY});
+const model = new OpenAI({modelName: "gpt-4", temperature: 0, maxTokens: 2000, openAIApiKey: process.env.API_KEY});
 const tools = [
-    new WebBrowser({ model, embeddings }),
+    new WebBrowser({model, embeddings}),
 ];
 
-app.use(express.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors({ origin: "*" }));
-
-app.post('/edit', async (req, res) => {
-    console.log(req.body);
-    const { html, edit } = req.body;
-    console.log({html, edit});
+app.post('/css', async (req, res) => {
+    const {css, description} = req.body;
     const executor = await initializeAgentExecutorWithOptions(tools, model, {
         agentType: "zero-shot-react-description",
         verbose: true,
-      });
-    console.log("Loaded agent.");
-
-    console.log(executor);
+    });
 
     const input = `You are a HTML processer. You are given raw HTML, and a task.
-You must output the raw HTML and its original content and nothing else.
-// 1. Try to be additive, keep as much of the original structure and styles unless otherwise specified.
-// 2. In the final output, only include the raw HTML — NOTHING else.
-// 3. When image URLs are asked for, find an actual image URL on the internet to use.
-// 4. Do NOT use the web browser unless the user asks for information on the internet (such as a summary or image).
+        You must output the raw CSS related to the HTML sent 
+        // 1. Only reply with CSS based on the task and the html structure sent
+        // 2. In the final output, only include the raw CSS — NOTHING else.
+        
+        ## Input
+        HTML: ${css}
+        Task: ${description}
+        // The output MUST be CSS and CSS only — no text`;
 
-## Input
-HTML: ${html}
-Task: ${edit}
-// The output MUST be HTML and HTML only — no text`;
+    const result = await executor.call({input});
+    res.json({output: result});
+});
 
-    const result = await executor.call({ input });
+app.post('/js', async (req, res) => {
+    const {js, description} = req.body;
+    const executor = await initializeAgentExecutorWithOptions(tools, model, {
+        agentType: "zero-shot-react-description",
+        verbose: true,
+    });
 
-    console.log(result);
+    const input = `You are a HTML processer. You are given raw HTML, and a task.
+        You must output the raw javascript related to the HTML sent 
+        // 1. Only reply with javascript based on the task and the html structure sent
+        // 2. In the final output, only include the raw javascript — NOTHING else.
+        
+        ## Input
+        HTML: ${js}
+        Task: ${description}
+        // The output MUST be javascript and javascript only — no text`;
+
+    const result = await executor.call({input});
     res.json({output: result});
 });
 
