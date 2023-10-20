@@ -447,6 +447,13 @@ function extractHtmlContent(mixedString) {
     return matches ? matches.join("") : "";
 }
 
+function cleanHtml(str) {
+    str = str.split(/\>[ ]?\</).join(">\n<");
+    str = str.split(/([*]?\{|\}[*]?\{|\}[*]?)/).join("\n");
+    str = str.split(/[*]?\;/).join("\;\n    ");
+    return str;
+}
+
 document.addEventListener("mouseover", (e) => {
     if (!isOn) return;
     if (isClicked) return;
@@ -484,7 +491,7 @@ document.addEventListener("keydown", function (event) {
     }
 });
 
-document.addEventListener("click", (e) => {
+document.addEventListener("dblclick", (e) => {
     if (!isOn) return;
     if (e.target === img) return;
 
@@ -549,20 +556,23 @@ document.addEventListener("click", (e) => {
         if (!isOn) return;
         currentEl.classList.remove("highlight-on-hover");
         button.textContent = "Loading...";
-        fetch("https://dubhacks23-production.up.railway.app/edit", {
+        fetch(`http://localhost:3001/html`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 html: currentEl.outerHTML,
-                edit: input.value,
+                description: input.value,
             }),
         })
             .then((response) => response.json()) // Convert the response to JSON
             .then((data) => {
                 try {
-                    const html = extractHtmlContent(data.output.output);
+                    let html = extractHtmlContent(data.output.output);
+                    plusBtn.dispatchEvent(new Event('click'));
+                    html = cleanHtml(html);
+                    textAreaA.value = html;
 
                     const fragment = document.createElement("div");
                     fragment.innerHTML = html;

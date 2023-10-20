@@ -65,6 +65,27 @@ app.post('/javascript', async (req, res) => {
     res.json({output: result});
 });
 
+app.post('/html', async (req, res) => {
+    const {html, description} = req.body;
+    const executor = await initializeAgentExecutorWithOptions(tools, model, {
+        agentType: "zero-shot-react-description",
+        verbose: true,
+    });
+
+    const input = `You are a HTML processer. You are given raw HTML, and a task.
+        You must output the raw html related to the HTML sent 
+        // 1. Only reply with html based on the task and the html structure sent
+        // 2. In the final output, only include the raw html — NOTHING else.
+        
+        ## Input
+        HTML: ${html}
+        Task: ${description}
+        // The output MUST be html and html only — no text`;
+
+    const result = await executor.call({input});
+    res.json({output: result});
+});
+
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });

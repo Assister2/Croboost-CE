@@ -253,6 +253,7 @@ body {
     font-weight: 500 !important;
     color: rgba(0, 0, 0, 0.8) !important;
     line-height: 14px !important;
+    resize: none !important;
 }
 .umix-tab-content {
     -webkit-animation: fadeEffect 1s;
