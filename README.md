@@ -52,7 +52,7 @@ Imagine being able to hover on any part of the page, ask an AI to change it to y
 - **Designing the UI** – creating a very intuitive UI, especially for remixing use, is extremely difficult. We eventually landed on a very similar approach to v0.dev’s select tool
 - **CSR/CORS + Devtool fun** – creating a secure, safe, and robust developer tool and chrome extension, while ensuring security requirements are met took many arduous hours of crying
 
-## What's next for Umix
+## What's next for Croboost
 
 We made small demo post on Twitter (X) 12 hours ago and has been **viewed 25,000+ times**.
 
