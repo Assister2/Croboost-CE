@@ -7,7 +7,7 @@
       "activeTab"
     ],
     "icons": {
-      "1080": "images/logo2.png"
+      "46": "images/logo.png"
     },
     "content_scripts": [
       {
