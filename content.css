@@ -1,0 +1,387 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+/* Fade in tabs */
+@-webkit-keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+/* Highlight effect on hover */
+.highlight-on-hover {
+    outline: 2px dashed rgb(65, 134, 246)  !important;
+    background-color: rgba(65, 134, 246, 0.2) !important;
+}
+
+.display-block {
+    display: block !important;
+}
+.umix-final-container {
+    color: black !important;
+    display: flex;
+    justify-content: flex-end;
+    align-items: start;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 99999;
+    font-weight: 400 !important;
+    opacity: 1 !important;
+    text-align: start;
+    font-size: 16px !important;
+    line-height: 16px !important;
+}
+.umix-logo {
+    height: 34px !important;
+    width: 100% !important;
+    margin: 4px 6px !important;
+}
+.umix-ai-container {
+    display: none;
+    width: 380px !important;
+    margin-right: 60px;
+    margin-top: 80px;
+    padding: 24px !important;
+    border: 1px solid rgba(192, 192, 192, 1) !important;
+    border-radius: 8px !important;
+    background: rgba(192, 192, 192, 1) !important;
+}
+.umix-ai-description {
+    border-radius: 4px !important;
+    padding: 16px 16px 32px 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.21) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    font-weight: 400 !important;
+    font-size: 12px !important;
+    color: rgba(0, 0, 0, 0.61) !important;
+}
+.umix-total-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    background-color: transparent !important;
+}
+.umix-ai-title {
+    margin-bottom: 10px !important;
+}
+.umix-toolbar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: black !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    margin-bottom: 30px !important;
+}
+.umix-toolbar-button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.umix-toolbar-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 15px;
+    height: 34px !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: black !important;
+    border-radius: 4px !important;
+    text-decoration: none !important;
+    margin: 4px 6px !important;
+    cursor: pointer !important;
+    -webkit-transition-duration: 0.4s !important; /* Safari */
+    transition-duration: 0.4s !important;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19) !important;
+    &:active {
+     transform: scale(0.96) !important;
+    }
+    &:before,&:after {
+     position: absolute !important;
+     content: "";
+     width: 150% !important;
+     left: 50% !important;
+     height: 100% !important;
+     transform: translateX(-50%) !important;
+     z-index: -1000 !important;
+     background-repeat: no-repeat !important;
+    }
+}
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px !important;
+    height: 15px !important;
+}
+.umix-ai-icon {
+    width: 30px !important;
+}
+.umix-content-container {
+    width: 360px;
+    display: none;
+    padding: 18px 16px;
+    background-color: #fff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 8px;
+    position: relative;
+}
+.umix-flying-btn {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer;
+    z-index: 99999;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+.umix-flying-btn:after {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 4em;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.5s;
+    box-shadow: 0 0 10px 20px white;
+}
+
+.umix-flying-btn:active:after {
+    box-shadow: 0 0 0 0 white;
+    position: absolute;
+    border-radius: 4em;
+    left: 0;
+    top:0;
+    opacity: 1;
+    transition: 0s;
+}
+.umix-content-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: black !important;
+    line-height: 19.2px !important;
+}
+.umix-input-label {
+    margin-top: 10px !important;
+    margin-bottom: 5px !important;
+    font-weight: 700;
+    font-size: 10px !important;
+    color: black !important;
+    line-height: 12px !important;
+}
+.umix-input-title {
+    width: 100% !important;
+    border-color: rgba(0, 0, 0, 0.16) !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-radius: 4px !important;
+    color: black !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.06) !important;
+
+}
+#tabB {
+    display: none;
+}
+.umix-tab {
+    margin-top: 10px;
+}
+.umix-tab-links {
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    border: 1px solid white;
+    color: rgba(0, 0, 0, 0.62);
+    padding: 8px !important;
+    border-radius: 8px !important;
+    &.hover {
+     color: white;
+     border: 1px solid black;
+     background-color: black;
+    }
+    &.active {
+     color: white;
+     border: 1px solid black;
+     background-color: black;
+    }
+    &.visited {
+     color: white;
+     border: 1px solid black;
+     background-color: black;
+    }
+}
+.umix-select {
+    margin-bottom: 10px;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    border: 1px solid rgba(198, 198, 198, 1) !important;
+    color: rgba(48, 48, 48,1) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+.umix-textarea {
+    border-radius: 4px !important;
+    border-color: rgba(0, 0, 0, 0.16) !important;
+    background: rgba(0, 0, 0, 0.08) !important;
+    width: 100%;
+    padding: 10px 8px;
+    box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.06) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: rgba(0, 0, 0, 0.8) !important;
+    line-height: 14px !important;
+}
+.umix-tab-content {
+    -webkit-animation: fadeEffect 1s;
+    animation: fadeEffect 1s;
+    margin-top: 10px;
+}
+.umix-create-btn {
+    position: relative !important;
+    width: 100% !important;
+    padding: 8px !important;
+    margin-top: 10px !important;
+    height: 31px !important;
+    border-radius: 4px !important;
+    background: rgba(16, 80, 61, 1) !important;
+    text-decoration: none !important;
+    overflow: hidden !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    text-align: center;
+    color: white !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    &:after {
+     content: "";
+     background: #90EE90;
+     display: block;
+     position: absolute;
+     padding-top: 300%;
+     padding-left: 350%;
+     margin-left: -20px!important;
+     margin-top: -120%;
+     opacity: 0;
+     transition: all 0.8s
+    }
+    &:active:after {
+         padding: 0;
+         margin: 0;
+         opacity: 1;
+         transition: 0s
+     }
+}
+.umix-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 350px; /* Adjust to your desired width */
+}
+
+.umix-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 1em;
+    padding: 5px;
+}
+
+.umix-button {
+    background: transparent;
+    border: none;
+}
+
+.arrow-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: #004B87;
+    border-radius: 50%;
+}
+
+.arrow-icon svg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    width: 15px;
+    height: 15px;
+}
+
+.fade {
+    animation: fade-in-out 3s infinite;
+}
+
+@keyframes fade-in-out {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.slide {
+    animation: slide-in 3s infinite;
+}
+
+@keyframes slide-in {
+    0% {
+        left: -100%;
+    }
+    50% {
+        left: 0;
+    }
+    100% {
+        left: -100%;
+    }
+}
+
+.rotate {
+    animation: rotate 3s infinite linear;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
