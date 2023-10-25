@@ -8,8 +8,28 @@
     <link rel="stylesheet" href="popup.css">
 </head>
 <body class="auth">
-<div class="container">
-    <h2 class="text-center">Signup</h2>
+<div class="container loginContainer" id="loginContainer">
+    <h2 class="text-center loginTitle" id="loginTitle">Login</h2>
+    <br>
+    <form class="loginForm" id="loginForm">
+        <div class="input-group">
+            <label for="loginEmail" class="label">Email</label>
+            <input type="text" id="loginEmail" class="input" placeholder="Email" required>
+            <span class="error-message"></span>
+        </div>
+        <br>
+        <div class="input-group">
+            <label for="loginPassword" class="label">Password</label>
+            <input type="password" id="loginPassword" class="input" required placeholder="At least 8 characters">
+            <span class="error-message"></span>
+        </div>
+        <br>
+        <button class="loginBtn" id="loginBtn" type="submit">Login</button>
+        <button class="button" type="button" id="redirectSignupBtn">Signup</button>
+    </form>
+</div>
+<div class="container signupContainer" id="signupContainer">
+    <h2 class="text-center signupTitle" id="signupTitle">Signup</h2>
     <br>
     <form class="signupForm" id="signupForm">
         <div class="input-group">
@@ -30,7 +50,7 @@
         </div>
         <br>
         <button class="button" type="submit">Signup</button>
-        <button class="outlineBtn" id="redirectLoginBtn">Login</button>
+        <button class="outlineBtn" type="button" id="redirectLoginBtn">Login</button>
     </form>
 </div>
 <script src="popup.js"></script>

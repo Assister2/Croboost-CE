@@ -3,15 +3,13 @@
     "name": "Croboost",
     "description": "Lets you remix pages from all over the internet",
     "version": "1.0",
-    "permissions": [
-      "activeTab"
-    ],
+    "permissions": [ "activeTab", "declarativeContent", "storage", "scripting" ],
     "icons": {
       "46": "images/logo.png"
     },
     "action": {
       "default_title": "Click to view a popup",
-      "default_popup": "./popup/login.html"
+      "default_popup": "./popup/popup.html"
     },
     "content_scripts": [
       {
@@ -20,10 +18,15 @@
         "css": ["content.css"]
       }
     ],
+    "host_permissions": ["https://api.croboost.ai/v1/auth/manual/login"],
+    "background": {
+      "service_worker": "./service_worker.js",
+      "type": "module"
+    },
     "web_accessible_resources": [
       {
         "resources": ["images/logo.svg", "images/ai-icon.svg", "js-confetti.min.js"],
         "matches": ["<all_urls>"]
       }
     ]
-  }
+}
