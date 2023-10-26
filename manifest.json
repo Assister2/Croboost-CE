@@ -9,23 +9,23 @@
     },
     "action": {
       "default_title": "Click to view a popup",
-      "default_popup": "./popup/popup.html"
+      "default_popup": "popup/popup.html"
     },
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["content.js"],
-        "css": ["content.css"]
+        "js": ["js/content.js", "js/jquery.js", "js/bootstrap.min.js"],
+        "css": ["css/content.css", "css/bootstrap.css"]
       }
     ],
     "host_permissions": ["https://api.croboost.ai/v1/auth/manual/login"],
     "background": {
-      "service_worker": "./service_worker.js",
+      "service_worker": "js/service_worker.js",
       "type": "module"
     },
     "web_accessible_resources": [
       {
-        "resources": ["images/logo.svg", "images/ai-icon.svg", "js-confetti.min.js"],
+        "resources": ["images/logo.svg", "images/ai-icon.svg", "js/js-confetti.min.js", "js/jquery.js"],
         "matches": ["<all_urls>"]
       }
     ]
