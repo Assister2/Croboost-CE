@@ -42,14 +42,14 @@ $("#signupForm").click( function () {
     let confirmPassword = $("#confirmPassword").val();
 
     if (!validateEmail(email)) {
-        $("#signupEmail").style.borderColor = "red";
+        $("#signupEmail").css("borderColor", "red");
     }
     if (password.length < 8) {
-        $("#signupPassword").style.borderColor = "red";
+        $("#signupPassword").css("borderColor", "red");
     }
 
     if (confirmPassword.length < 8) {
-        $("#confirmPassword").style.borderColor = "red";
+        $("#confirmPassword").css("borderColor", "red");
     }
 
     if (email && validateEmail(email) && password.length >= 8 && password === confirmPassword) {

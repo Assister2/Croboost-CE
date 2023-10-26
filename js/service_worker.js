@@ -1,5 +1,4 @@
 chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) {
-    console.log(message.payload);
     if (message.message === "login") {
         fetch('https://api.croboost.ai/v1/auth/manual/login', {
             method: 'POST',
