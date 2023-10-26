@@ -8,14 +8,22 @@ $("#redirectLoginBtn").click(function(){
     $("#signupContainer").css("display", "none");
 })
 
-$("#loginForm").click(function () {
+$("#loginBtn").click(function () {
     let email = $("#loginEmail").val();
     let password = $("#loginPassword").val();
     if (!validateEmail(email)) {
-        $("#loginEmail").css("borderColor", "red");
+        $(".mail-error").css("display","block");
+        $(".mail-error").html("Invalid email");
+        $(".mail-error").css("color","red");
+    }else{
+        $(".mail-error").css("display","none");
     }
     if (password.length < 8) {
-        $("#loginPassword").css("borderColor", "red");
+        $(".password-error").css("display","block");
+        $(".password-error").html("Password length should be 8");
+        $(".password-error").css("color","red");
+    }else{
+        $(".password-error").css("display","none");
     }
     
     if (email && validateEmail(email) && password.length >= 8) {
@@ -36,25 +44,44 @@ $("#loginForm").click(function () {
     }
 });
 
-$("#signupForm").click( function () {
+$("#signupBtn").click( function () {
     let email = $("#signupEmail").val();
     let password = $("#signupPassword").val();
     let confirmPassword = $("#confirmPassword").val();
 
     if (!validateEmail(email)) {
-        $("#signupEmail").css("borderColor", "red");
+        $(".email-error").css("display","block");
+        $(".email-error").html("Invalid email");
+        $(".email-error").css("color","red");
+    }else{
+        $(".email-error").css("display","none");
     }
     if (password.length < 8) {
-        $("#signupPassword").css("borderColor", "red");
+        $(".pwd-error").css("display","block");
+        $(".pwd-error").html("Password length should be 8");
+        $(".pwd-error").css("color","red");
+    }else{
+        $(".pwd-error").css("display","none");
     }
 
-    if (confirmPassword.length < 8) {
-        $("#confirmPassword").css("borderColor", "red");
+    if (confirmPassword != password) {
+        $(".cfm-error").css("display","block");
+        $(".cfm-error").html("Password not match");
+        $(".cfm-error").css("color","red");
+    }else{
+        $(".cfm-error").css("display","none");
     }
 
     if (email && validateEmail(email) && password.length >= 8 && password === confirmPassword) {
         chrome.runtime.sendMessage({message: 'signup', payload: {email, password}}, response => {
-            console.log(response);
+            if(response.status == "OK"){
+                $("#signupDetails").html("Successfully SignUp");
+                $("#signupDetails").css("color","green");
+            }
+            if(response.detail){
+                $("#signupDetails").html(response.detail);
+                $("#signupDetails").css("color","red");
+            }
         })
     }
 });
