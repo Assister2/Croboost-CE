@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
         fetch('https://api.croboost.ai/v1/auth/manual/signup', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 email: message.payload.email,
@@ -28,7 +28,30 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
         }).then(res => {
             return res.json();
         }).then(res => {
-            console.log(res);
+            senderResponse(res);
+        })
+    }
+    if (message.message === "tests") {
+        fetch('https://api.croboost.ai/v1/ab/tests/', {
+            method: 'GET',
+            headers: {
+                'Authorization': "Bearer "+ message.payload.token
+            },
+        }).then(res => {
+            return res.json();
+        }).then(res => {
+            senderResponse(res);
+        })
+    }
+    if (message.message === "view") {
+        fetch('https://api.croboost.ai/v1/metrics/'+message.payload.record_id, {
+            method: 'GET',
+            headers: {
+                'Authorization': "Bearer "+ message.payload.access_token.access_token
+            },
+        }).then(res => {
+            return res.json();
+        }).then(res => {
             senderResponse(res);
         })
     }
