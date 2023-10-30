@@ -46,6 +46,8 @@ $(document).ready(function (){
                                     <div class="card-body">
                                     <h5 class="card-title">`+element.title+`</h5>
                                     <button class="btn btn-primary view-btn-`+index+`" data-record="`+element.record_id+`">View Data</button>
+                                    <br>
+                                    <span class="error-view-`+index+`"</span>
                                     </div>
                                 </div>`
                                 $(".test-container").append(str);
@@ -54,7 +56,12 @@ $(document).ready(function (){
                                     chrome.storage.local.get("access_token").then((access_token) =>{
                                         chrome.runtime.sendMessage({message: 'view', payload: {record_id, access_token}}, response => {
                                             console.log(response);
-                                    
+                                            if(response.detail){
+                                                $(".error-view-"+index).html(response.detail);
+                                                $(".error-view-"+index).css("color","red");
+                                            }else{
+                                                var datasets = getData(JSON.parse(response.data))
+                                            }
                                         })
                                     });
                                     
@@ -114,7 +121,9 @@ $(document).ready(function (){
     });
 })
 
-
+function getData(res){
+    
+}
 function validateEmail (email) {
     return email.match(
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
