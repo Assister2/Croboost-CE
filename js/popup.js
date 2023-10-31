@@ -33,9 +33,7 @@ $(document).ready(function (){
                         'email': email,
                         'access_token': response.access_token,
                         'refresh_token': response.refresh_token,
-                    }).then(()=> {
-                        console.log("Test");
-                    })
+                    });
                     $("#loginDetails").html("Successfully Loggedin");
                     $("#loginDetails").css("color", "green");
                     chrome.runtime.sendMessage({message: 'tests', payload: {"token":response.access_token}}, response => {
@@ -55,12 +53,56 @@ $(document).ready(function (){
                                     var record_id = $(this).attr("data-record");
                                     chrome.storage.local.get("access_token").then((access_token) =>{
                                         chrome.runtime.sendMessage({message: 'view', payload: {record_id, access_token}}, response => {
-                                            console.log(response);
                                             if(response.detail){
                                                 $(".error-view-"+index).html(response.detail);
                                                 $(".error-view-"+index).css("color","red");
                                             }else{
-                                                var datasets = getData(JSON.parse(response.data))
+                                                $(".view-container").css("display","block");
+                                                $(".test-container").css("display","none");
+                                                console.log(JSON.parse(response.data));
+                                                var conversionSet = getData(JSON.parse(response.data), "conversion");
+                                                const conversion = $("#conversion");
+                                                new Chart(conversion, {
+                                                    type: 'bar',
+                                                    data: conversionSet,
+                                                    options: {
+                                                        indexAxis: 'y', // <-- here
+                                                        responsive: true
+                                                    }
+                                                });
+
+                                                var eventSet = getData(JSON.parse(response.data), "event");
+                                                const event = $("#event");
+                                                new Chart(event, {
+                                                    type: 'bar',
+                                                    data: eventSet,
+                                                    options: {
+                                                        indexAxis: 'y', // <-- here
+                                                        responsive: true
+                                                    }
+                                                });
+
+                                                var bounceSet = getData(JSON.parse(response.data), "bounce");
+                                                const bounce = $("#bounce");
+                                                new Chart(bounce, {
+                                                    type: 'bar',
+                                                    data: bounceSet,
+                                                    options: {
+                                                        indexAxis: 'y', // <-- here
+                                                        responsive: true
+                                                    }
+                                                });
+
+                                                var sessionSet = getData(JSON.parse(response.data), "session");
+                                                const session = $("#session");
+                                                new Chart(session, {
+                                                    type: 'bar',
+                                                    data: sessionSet,
+                                                    options: {
+                                                        indexAxis: 'y', // <-- here
+                                                        responsive: true
+                                                    }
+                                                });
                                             }
                                         })
                                     });
@@ -77,6 +119,11 @@ $(document).ready(function (){
             })
         }
     });
+
+    $(".back-test").click(function (){
+        $(".test-container").css("display","block");
+        $(".view-container").css("display","none");
+    })
 
     $("#signupBtn").click( function () {
         let email = $("#signupEmail").val();
@@ -121,8 +168,50 @@ $(document).ready(function (){
     });
 })
 
-function getData(res){
-    
+function getData(res, type){
+    var datasets = [];
+    var title = "";
+    res.forEach(el => {
+        const color = Math.floor(Math.random()*16777215).toString(16);
+        const bgcolor = Math.floor(Math.random()*16777215).toString(16);
+        var data = {label: el.Variant, borderColor: "#"+bgcolor, backgroundColor: "#"+color}
+        switch(type){
+            case  "conversion":
+                data.data = [el.Average_Conversion_Rate.slice(0, -1)];
+                break;
+            case "event":
+                data.data = [el.Average_Event_Count];
+                break;
+            case "bounce":
+                data.data = [el.Bounce_Rate.slice(0, -1)];
+                break;
+            case "session":
+                data.data = [el.Average_Session_Duration];
+                break;
+        }
+        datasets.push(data);
+
+    });
+    switch(type){
+       case  "conversion":
+            title = "Conversion Rate %";
+            break;
+        case "event":
+            title = "Avg. Event count";
+            break;
+        case "bounce":
+            title = "Bounce Rate %";
+            break;
+        case "session":
+            title = "Session Duration";
+            break;
+    }
+   
+    if(type=="bounce"){
+        title = "Bounce Rate %";
+    }
+
+    return {labels: [title], datasets:datasets}
 }
 function validateEmail (email) {
     return email.match(
