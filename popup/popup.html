@@ -15,12 +15,12 @@
         <br>
         <form class="loginForm" id="loginForm">
             <div class="input-group">
-                <input type="text" id="loginEmail" class="input" placeholder="Email" required>
+                <input type="text" id="loginEmail" class="input"  placeholder="Email" required>
                 <span class="mail-error"></span>
             </div>
             <br>
             <div class="input-group">
-                <input type="password" id="loginPassword" class="input" required placeholder="At least 8 characters">
+                <input type="password" id="loginPassword" class="input"  required placeholder="At least 8 characters">
                 <span class="password-error"></span>
             </div>
             <br>
@@ -53,10 +53,14 @@
         </form>
     </div>
     <div class="container test-container"></div>
-    <div class="container view-container">
+    <div class="container view-container" style="display: none;">
+        <button class="btn btn-primary back-test">Back</button>
+        <br>
         <canvas id="conversion"></canvas>
         <canvas id="event"></canvas>
         <canvas id="bounce"></canvas>
+        <canvas id="session"></canvas>
+
     </div>
     <script src="../js/jquery.js"></script>
     <script src="../js/chart.js"></script>
