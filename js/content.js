@@ -151,7 +151,7 @@ inputTitle.setAttribute("name", "title");
 inputTitle.setAttribute("placeholder", "Test Name");
 inputTitle.className = "umix-input-title";
 
-<!-- Tab links -->
+// <!-- Tab links -->
 const tab = document.createElement('div');
 tab.className = "umix-tab";
 
@@ -172,7 +172,7 @@ tabBtnB.addEventListener('click', function (e) {
 tab.appendChild(tabBtnA);
 tab.appendChild(tabBtnB);
 
-<!-- Tab content -->
+// <!-- Tab content -->
 const tabContentA = document.createElement('div');
 tabContentA.className = "umix-tab-content";
 tabContentA.setAttribute("id", "tabA");
