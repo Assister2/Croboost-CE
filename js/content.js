@@ -53,7 +53,7 @@ $(document).ready(function (){
                     <button class="btn btn-default" type="button" id="redirectLoginBtn">Login</button>
                 </form>
             </div>
-            <div class="container test-container" style="display:none;">
+            <div class="container test-container" style="display:none; overflow: scroll; max-height: 100%">
                 <button class="btn btn-primary back-create">Back</button>
             </div>
             <div class="container view-container" style="display: none;">
@@ -140,7 +140,7 @@ $(document).ready(function (){
         </div>`
     $("body").append(content);
     chrome.storage.local.get("access_token").then((result) =>{
-        if(result){
+        if(Object.keys(result).length != 0){
             $(".loginContainer").css("display", "none");
             $(".umix-final-container").css("display", "block")
         }
@@ -300,7 +300,6 @@ $(document).ready(function (){
                     }
                 }
             }, response => {
-                alert(JSON.stringify(response));
                 chrome.runtime.sendMessage({message: 'tests', payload: {"token":temp.access_token}}, response => {
                     if(response){
                         $(".umix-content-container").css("display", "none");
