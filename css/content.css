@@ -21,17 +21,24 @@ body {
 .display-block {
     display: block !important;
 }
-.umix-final-container {
-    color: black !important;
-    display: flex;
-    justify-content: flex-end;
-    align-items: start;
+.extension-container{
     position: fixed;
+    width: 400px !important;
     top: 10px;
     right: 10px;
     z-index: 99999;
     font-weight: 400 !important;
     opacity: 1 !important;
+    text-align: center;
+}
+.umix-final-container {
+    color: black !important;
+    display: flex;
+    justify-content: flex-end;
+    align-items: start;
+    z-index: 99999;
+    font-weight: 400 !important;
+    opacity: 0.5 !important;
     text-align: start;
     font-size: 16px !important;
     line-height: 16px !important;
@@ -44,9 +51,9 @@ body {
 .umix-ai-container {
     display: none;
     width: 380px !important;
-    margin-right: 60px;
+    /* margin-right: 60px;
     margin-top: 80px;
-    padding: 24px !important;
+    padding: 24px !important; */
     border: 1px solid rgba(192, 192, 192, 1) !important;
     border-radius: 8px !important;
     background: rgba(192, 192, 192, 1) !important;
@@ -64,7 +71,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: end;
+    align-items: center;
     background-color: transparent !important;
 }
 .umix-ai-title {
