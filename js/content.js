@@ -9,48 +9,51 @@ let currentAIDescription = "";
 
 $(document).ready(function (){
     var content = `
-        <div class="container extension-container p-2">
-            <div class="container loginContainer p-2" id="loginContainer">
-                <h2 class="text-center loginTitle" id="loginTitle">Login</h2>
+        <div class="container extension-container">
+            <div class="container loginContainer p-4" id="loginContainer">
+                <h2 class="loginTitle" id="loginTitle">Sign In</h2>
                 <strong id="loginDetails"></strong>
-                <br>
                 <form class="loginForm" id="loginForm">
-                    <div class="input-group">
-                        <input type="text" id="loginEmail" class="input"  placeholder="Email" required>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="text" id="loginEmail" class="form-control"  placeholder="email@gmail.com" required>
                         <span class="mail-error"></span>
                     </div>
-                    <br>
-                    <div class="input-group">
-                        <input type="password" id="loginPassword" class="input"  required placeholder="At least 8 characters">
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="loginPassword" class="form-control"  required placeholder="At least 8 characters">
                         <span class="password-error"></span>
                     </div>
-                    <br>
-                    <button class="btn btn-primary" id="loginBtn" type="button">Login</button>
-                    <button class="btn btn-default" type="button" id="redirectSignupBtn">Signup</button>
+                    <button class="btn btn-signin btn-block" id="loginBtn" type="button">Sign In</button>
+                    <a class="btn-link" type="button" id="redirectSignupBtn">Signup</a>
                 </form>
             </div>
-            <div class="container signupContainer" id="signupContainer" style="display: none">
+            <div class="container signupContainer p-4" id="signupContainer" style="display: none">
                 <h2 class="text-center signupTitle" id="signupTitle">Signup</h2>
                 <strong id="signupDetails"></strong>
-                <br>
                 <form class="signupForm" id="signupForm">
-                    <div class="input-group">
-                        <input type="text" id="signupEmail" class="input" placeholder="Email">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" id="signupName" name="name" class="form-control" placeholder="Enter your name">
                         <span class="email-error"></span>
                     </div>
-                    <br>
-                    <div class="input-group">
-                        <input type="password" id="signupPassword" class="input" placeholder="password">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="text" id="signupEmail" class="form-control" placeholder="email@email.com">
+                        <span class="email-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="signupPassword" class="form-control" placeholder="password">
                         <span class="pwd-error"></span>
                     </div>
-                    <br>
-                    <div class="input-group">
-                        <input type="password" id="confirmPassword" class="input" placeholder="confirm password">
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="confirm password">
                         <span class="cfm-error"></span>
                     </div>
-                    <br>
-                    <button class="btn btn-primary" type="button" id="signupBtn">Signup</button>
-                    <button class="btn btn-default" type="button" id="redirectLoginBtn">Login</button>
+                    <button class="btn btn-signup btn-block" type="button" id="signupBtn">Signup</button>
+                    <a class="btn-link" type="button" id="redirectLoginBtn">Sign In</a>
                 </form>
             </div>
             <div class="container test-container" style="display:none; overflow: scroll; max-height: 100%">
@@ -293,11 +296,11 @@ $(document).ready(function (){
             chrome.storage.local.get("access_token").then((temp) =>{
                 chrome.runtime.sendMessage({message: 'createTest', payload: {
                     token: temp, 
-                    data: {
-                        title: inputTitle.value,
+                    data: JSON.stringify({
+                        title: inputTitle,
                         data: currentTextAreaAStr,
                         is_live: false
-                    }
+                    })
                 }
             }, response => {
                 chrome.runtime.sendMessage({message: 'tests', payload: {"token":temp.access_token}}, response => {
