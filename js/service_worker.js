@@ -57,8 +57,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
     }
 
     if (message.message === "createTest") {
-        console.log(message.payload)
-        fetch('https://api.croboost.ai/v1/ab/tests/'+message.payload.record_id, {
+        console.log(message.payload.data);
+        fetch('https://api.croboost.ai/v1/ab/tests/', {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer "+ message.payload.token.access_token
