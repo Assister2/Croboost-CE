@@ -6,7 +6,7 @@ let currentTabId = "tabA";
 let currentTextAreaAStr = "";
 let currentTextAreaBStar = "";
 let currentAIDescription = "";
-
+var imagePath = chrome.runtime.getURL("images");
 $(document).ready(function (){
     var content = `
         <div class="container extension-container">
@@ -56,12 +56,16 @@ $(document).ready(function (){
                     <a class="btn-link" type="button" id="redirectLoginBtn">Sign In</a>
                 </form>
             </div>
-            <div class="container test-container" style="display:none; overflow: scroll; max-height: 100%">
-                <button class="btn btn-primary back-create">Back</button>
+            <div class="container test-container" style="display:none">
+                <div class="test-header" style="display: flex; justify-content: space-between">
+                    <span><strong style="color: black">A/B Tests</strong></span>
+                    <a class="back-create">Back</button>
+                </div>
             </div>
             <div class="container view-container" style="display: none;">
-                <button class="btn btn-primary back-test">Back</button>
+                <button class="back-test">Back</button>
                 <br>
+                <div class="test-title"></div>
                 <canvas id="conversion"></canvas>
                 <canvas id="event"></canvas>
                 <canvas id="bounce"></canvas>
@@ -70,30 +74,27 @@ $(document).ready(function (){
             <div class="umix-final-container p-2" style="display:none">
                 <div class="umix-total-container">
                     <div class="umix-toolbar-container">
-                        <img src="chrome-extension://kfimhnomfhbfkfifkbgnenilfnojmipj/images/logo.svg" alt="logo" class="umix-logo">
+                        <div class="logo-container">
+                            <img src="`+imagePath+`/cro.svg" alt="logo">
+                            <img src="`+imagePath+`/arrow.svg" alt="logo" class="arrow-btn">
+                        </div>
                         <div class="umix-toolbar-button-group">
-                            <button type="button" class="umix-toolbar-btn plus-btn">
-                            <span class="btn-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <path d="M4 12H20M12 4V20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </g>
-                                </svg>
-                            </span>
+                            <button type="button" class="umix-toolbar-btn cursor-btn">
+                                <span class="btn-icon">
+                                    <img src="`+imagePath+`/plus.svg" class="umix-ai-icon" alt="ai-icon">
+                                </span>
                             </button>
-                            <button type="button" class="umix-toolbar-btn cursor-btn"><span class="btn-icon"><img src="chrome-extension://kfimhnomfhbfkfifkbgnenilfnojmipj/images/ai-icon.svg" class="umix-ai-icon" alt="ai-icon"></span></button>
-                            <button type="button" class="umix-toolbar-btn">
-                            <span class="btn-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <path d="M4 12H20M12 4V20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
+                            <button type="button" class="umix-toolbar-btn cursor-btn">
+                                <span class="btn-icon">
+                                    <img src="`+imagePath+`/cursor.svg" class="umix-ai-icon" alt="ai-icon">
+                                </span>
                             </button>
                         </div>
+                    </div>
+                    <div class="menu-container" style="display:none">
+                        <a class="view-test-btn">Test Data</a>
+                        <a class="create-test-btn">Create New Test</a>
+                        <a class="logout-btn">Logout</a>
                     </div>
                     <div class="umix-ai-container p-2">
                         <div class="umix-content-title umix-ai-title">AI Editor</div>
@@ -141,6 +142,7 @@ $(document).ready(function (){
                 </div>
             </div>
         </div>`
+
     $("body").append(content);
     chrome.storage.local.get("access_token").then((result) =>{
         if(Object.keys(result).length != 0){
@@ -156,7 +158,137 @@ $(document).ready(function (){
         $("#loginContainer").css("display","block");
         $("#signupContainer").css("display", "none");
     })
-    
+    $(".logo-container").click(function(){
+        if($(".menu-container").css("display") == "none"){
+            $(".menu-container").css("display","flex");
+            $(".arrow-btn").css({ WebkitTransform: 'rotate(-180deg)'});
+        }else{
+            $(".menu-container").css("display","none");
+            $(".arrow-btn").css({ WebkitTransform: 'rotate(0deg)'});
+        }
+    })
+    $(".view-test-btn").click(function(){
+        chrome.storage.local.get("access_token").then((temp) =>{
+            chrome.runtime.sendMessage({message: 'tests', payload: {"token":temp.access_token}}, response => {
+                if(response){
+                    // $(".test-title").html()
+                    $(".menu-container").css("display", "none");
+                    response.forEach((element, index) => {
+                        let str = `<div class="card m-1 test-data">
+                            <div class="card-body">
+                            <h5 class="card-title">`+element.title+`</h5>
+                            <a class="view-data view-btn-`+index+`" data-record="`+element.record_id+`">View Data</button>
+                            <br>
+                            <span class="error-view-`+index+`"</span>
+                            </div>
+                        </div>`
+                        $(".test-container").append(str);
+                        $(".test-container").css("display","block");
+                        $(".view-btn-"+index).click(function(){
+                            var record_id = $(this).attr("data-record");
+                            chrome.runtime.sendMessage({message: 'view', payload: {record_id, temp}}, response => {
+                                if(response.detail){
+                                    $(".error-view-"+index).html(response.detail);
+                                    $(".error-view-"+index).css("color","red");
+                                }else{
+                                    $(".view-container").css("display","block");
+                                    $(".test-container").css("display","none");
+                                    console.log(JSON.parse(response.data));
+                                    var conversionSet = getData(JSON.parse(response.data), "conversion");
+                                    const conversion = $("#conversion");
+                                    new Chart(conversion, {
+                                        type: 'bar',
+                                        data: conversionSet,
+                                        options: {
+                                            indexAxis: 'y', // <-- here
+                                            responsive: true,
+                                            elements: {
+                                                bar: {
+                                                  borderWidth: 2,
+                                                }
+                                            },
+                                            plugins: {
+                                                legend: {
+                                                  position: 'bottom',
+                                                },
+                                                title: {
+                                                  display: true,
+                                                  text: 'Conversion Rate %'
+                                                }
+                                            }
+                                        }
+
+                                    });
+
+                                    var eventSet = getData(JSON.parse(response.data), "event");
+                                    const event = $("#event");
+                                    new Chart(event, {
+                                        type: 'bar',
+                                        data: eventSet,
+                                        options: {
+                                            indexAxis: 'y', // <-- here
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                  position: 'bottom',
+                                                },
+                                                title: {
+                                                  display: true,
+                                                  text: 'Avg. Event count'
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    var bounceSet = getData(JSON.parse(response.data), "bounce");
+                                    const bounce = $("#bounce");
+                                    new Chart(bounce, {
+                                        type: 'bar',
+                                        data: bounceSet,
+                                        options: {
+                                            indexAxis: 'y', // <-- here
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                  position: 'bottom',
+                                                },
+                                                title: {
+                                                  display: true,
+                                                  text: 'Bounce Rate %'
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    var sessionSet = getData(JSON.parse(response.data), "session");
+                                    const session = $("#session");
+                                    new Chart(session, {
+                                        type: 'bar',
+                                        data: sessionSet,
+                                        options: {
+                                            indexAxis: 'y', // <-- here
+                                            responsive: true,
+                                            plugins: {
+                                                legend: {
+                                                  position: 'bottom',
+                                                },
+                                                title: {
+                                                  display: true,
+                                                  text: 'Session Duration'
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                            
+                        })
+                    });
+                }
+            });
+        })
+                
+    })
     $("#loginBtn").click(function () {
         let email = $("#loginEmail").val();
         let password = $("#loginPassword").val();
@@ -200,10 +332,10 @@ $(document).ready(function (){
         $(".test-container").css("display","block");
         $(".view-container").css("display","none");
     })
-    $(".back-create").click(function (){
-        $(".test-container").css("display","none");
-        $(".umix-content-container").css("display","block");
-    })
+    // $(".back-create").click(function (){
+    //     $(".test-container").css("display","none");
+    //     $(".umix-content-container").css("display","block");
+    // })
 
     $("#signupBtn").click( function () {
         let email = $("#signupEmail").val();
@@ -326,7 +458,6 @@ $(document).ready(function (){
                                     }else{
                                         $(".view-container").css("display","block");
                                         $(".test-container").css("display","none");
-                                        console.log(JSON.parse(response.data));
                                         var conversionSet = getData(JSON.parse(response.data), "conversion");
                                         const conversion = $("#conversion");
                                         new Chart(conversion, {
@@ -334,8 +465,23 @@ $(document).ready(function (){
                                             data: conversionSet,
                                             options: {
                                                 indexAxis: 'y', // <-- here
-                                                responsive: true
+                                                responsive: true,
+                                                elements: {
+                                                    bar: {
+                                                      borderWidth: 2,
+                                                    }
+                                                },
+                                                plugins: {
+                                                    legend: {
+                                                      position: 'bottom',
+                                                    },
+                                                    title: {
+                                                      display: true,
+                                                      text: 'Conversion Rate %'
+                                                    }
+                                                }
                                             }
+
                                         });
 
                                         var eventSet = getData(JSON.parse(response.data), "event");
@@ -345,7 +491,16 @@ $(document).ready(function (){
                                             data: eventSet,
                                             options: {
                                                 indexAxis: 'y', // <-- here
-                                                responsive: true
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                      position: 'bottom',
+                                                    },
+                                                    title: {
+                                                      display: true,
+                                                      text: 'Avg. Event count'
+                                                    }
+                                                }
                                             }
                                         });
 
@@ -356,7 +511,16 @@ $(document).ready(function (){
                                             data: bounceSet,
                                             options: {
                                                 indexAxis: 'y', // <-- here
-                                                responsive: true
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                      position: 'bottom',
+                                                    },
+                                                    title: {
+                                                      display: true,
+                                                      text: 'Bounce Rate %'
+                                                    }
+                                                }
                                             }
                                         });
 
@@ -367,7 +531,16 @@ $(document).ready(function (){
                                             data: sessionSet,
                                             options: {
                                                 indexAxis: 'y', // <-- here
-                                                responsive: true
+                                                responsive: true,
+                                                plugins: {
+                                                    legend: {
+                                                      position: 'bottom',
+                                                    },
+                                                    title: {
+                                                      display: true,
+                                                      text: 'Session Duration'
+                                                    }
+                                                }
                                             }
                                         });
                                     }
@@ -410,26 +583,8 @@ function getData(res, type){
         datasets.push(data);
 
     });
-    switch(type){
-       case  "conversion":
-            title = "Conversion Rate %";
-            break;
-        case "event":
-            title = "Avg. Event count";
-            break;
-        case "bounce":
-            title = "Bounce Rate %";
-            break;
-        case "session":
-            title = "Session Duration";
-            break;
-    }
-   
-    if(type=="bounce"){
-        title = "Bounce Rate %";
-    }
-
-    return {labels: [title], datasets:datasets}
+    
+    return {labels: [""], datasets:datasets}
 }
 
 function validateEmail (email) {
