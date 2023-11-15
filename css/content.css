@@ -34,7 +34,7 @@ body {
     border-radius: 8px;
     gap: 10px;
 
-    .btn-signin, .btn-signup{
+    .btn-signin, .btn-signup, .btn-create-test{
         background-color: #10503D;
         color: white;
         font-weight: bold !important;
@@ -169,7 +169,7 @@ body {
         border-color: black !important;
         border-radius: 8px !important;
         padding: 10px !important;
-        margin-bottom: 30px !important;
+        margin-bottom: 5px !important;
     }
     .umix-toolbar-button-group {
         display: flex;

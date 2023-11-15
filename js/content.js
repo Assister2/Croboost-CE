@@ -1,4 +1,4 @@
-// localStorage.setItem("toggle", false);
+localStorage.setItem("toggle", false);
 
 // // Global variable
 
@@ -7,149 +7,167 @@ let currentTextAreaAStr = "";
 let currentTextAreaBStar = "";
 let currentAIDescription = "";
 var imagePath = chrome.runtime.getURL("images");
+let isOn = false;
+
+
 $(document).ready(function (){
     var content = `
-        <div class="container extension-container">
-            <div class="container loginContainer p-4" id="loginContainer">
-                <h2 class="loginTitle" id="loginTitle">Sign In</h2>
-                <strong id="loginDetails"></strong>
-                <form class="loginForm" id="loginForm">
-                    <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        <input type="text" id="loginEmail" class="form-control"  placeholder="email@gmail.com" required>
-                        <span class="mail-error"></span>
+        <div class="extension-container umix-popup">
+            <div class="loginContainer p-4 umix-popup" id="loginContainer">
+                <h2 class="loginTitle umix-popup" id="loginTitle">Sign In</h2>
+                <strong id="loginDetails umix-popup"></strong>
+                <form class="loginForm umix-popup" id="loginForm">
+                    <div class="form-group umix-popup">
+                        <label class="form-label umix-popup">Email Address</label>
+                        <input type="text" id="loginEmail" class="form-control umix-popup"  placeholder="email@gmail.com" required>
+                        <span class="mail-error umix-popup"></span>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-control"  required placeholder="At least 8 characters">
-                        <span class="password-error"></span>
+                    <div class="form-group umix-popup">
+                        <label class="form-label umix-popup">Password</label>
+                        <input type="password" id="loginPassword" class="form-control umix-popup"  required placeholder="At least 8 characters">
+                        <span class="password-error umix-popup"></span>
                     </div>
-                    <button class="btn btn-signin btn-block" id="loginBtn" type="button">Sign In</button>
-                    <a class="btn-link" type="button" id="redirectSignupBtn">Signup</a>
+                    <button class="btn btn-signin btn-block umix-popup" id="loginBtn" type="button">Sign In</button>
+                    <a class="btn-link umix-popup" type="button" id="redirectSignupBtn">Signup</a>
                 </form>
             </div>
-            <div class="container signupContainer p-4" id="signupContainer" style="display: none">
-                <h2 class="text-center signupTitle" id="signupTitle">Signup</h2>
-                <strong id="signupDetails"></strong>
-                <form class="signupForm" id="signupForm">
-                    <div class="form-group">
-                        <label class="form-label">Name</label>
-                        <input type="text" id="signupName" name="name" class="form-control" placeholder="Enter your name">
-                        <span class="email-error"></span>
+            <div class="signupContainer p-4 umix-popup" id="signupContainer" style="display: none">
+                <h2 class="text-center signupTitle umix-popup" id="signupTitle">Signup</h2>
+                <strong id="signupDetails umix-popup"></strong>
+                <form class="signupForm umix-popup" id="signupForm">
+                    <div class="form-group umix-popup">
+                        <label class="form-label umix-popup">Name</label>
+                        <input type="text" id="signupName" name="name" class="form-control umix-popup" placeholder="Enter your name">
+                        <span class="email-error umix-popup"></span>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        <input type="text" id="signupEmail" class="form-control" placeholder="email@email.com">
-                        <span class="email-error"></span>
+                    <div class="form-group umix-popup">
+                        <label class="form-label umix-popup">Email Address</label>
+                        <input type="text" id="signupEmail" class="form-control umix-popup" placeholder="email@email.com">
+                        <span class="email-error umix-popup"></span>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="signupPassword" class="form-control" placeholder="password">
-                        <span class="pwd-error"></span>
+                    <div class="form-group umix-popup">
+                        <label class="form-label umix-popup">Password</label>
+                        <input type="password" id="signupPassword" class="form-control umix-popup" placeholder="password">
+                        <span class="pwd-error umix-popup"></span>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Confirm Password</label>
-                        <input type="password" id="confirmPassword" class="form-control" placeholder="confirm password">
-                        <span class="cfm-error"></span>
+                    <div class="form-group umix-popup">
+                        <label class="form-label umix-popup">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-control umix-popup" placeholder="confirm password">
+                        <span class="cfm-error umix-popup"></span>
                     </div>
-                    <button class="btn btn-signup btn-block" type="button" id="signupBtn">Signup</button>
-                    <a class="btn-link" type="button" id="redirectLoginBtn">Sign In</a>
+                    <button class="btn btn-signup btn-block umix-popup" type="button" id="signupBtn">Signup</button>
+                    <a class="btn-link umix-popup" type="button" id="redirectLoginBtn">Sign In</a>
                 </form>
             </div>
-            <div class="container test-container" style="display:none">
-                <div class="test-header" style="display: flex; justify-content: space-between">
-                    <span><strong style="color: black">A/B Tests</strong></span>
-                    <a class="back-create">Back</button>
-                </div>
-            </div>
-            <div class="container view-container" style="display: none;">
-                <button class="back-test">Back</button>
-                <br>
-                <div class="test-title"></div>
-                <canvas id="conversion"></canvas>
-                <canvas id="event"></canvas>
-                <canvas id="bounce"></canvas>
-                <canvas id="session"></canvas>
-            </div>
-            <div class="umix-final-container p-2" style="display:none">
-                <div class="umix-total-container">
-                    <div class="umix-toolbar-container">
-                        <div class="logo-container">
-                            <img src="`+imagePath+`/cro.svg" alt="logo">
-                            <img src="`+imagePath+`/arrow.svg" alt="logo" class="arrow-btn">
+            
+            
+            <div class="umix-final-container umix-popup p-2" style="display:none">
+                <div class="umix-total-container umix-popup">
+                    <div class="umix-toolbar-container umix-popup">
+                        <div class="logo-container umix-popup">
+                            <img src="`+imagePath+`/cro.svg" alt="logo" class="umix-popup">
+                            <img src="`+imagePath+`/arrow.svg" alt="logo" class="arrow-btn umix-popup">
                         </div>
-                        <div class="umix-toolbar-button-group">
-                            <button type="button" class="umix-toolbar-btn cursor-btn">
-                                <span class="btn-icon">
-                                    <img src="`+imagePath+`/plus.svg" class="umix-ai-icon" alt="ai-icon">
+                        <div class="umix-toolbar-button-group umix-popup">
+                            <button type="button" class="umix-toolbar-btn plus-btn umix-popup">
+                                <span class="btn-icon umix-popup">
+                                    <img src="`+imagePath+`/plus.svg" class="umix-ai-icon umix-popup" alt="ai-icon">
                                 </span>
                             </button>
-                            <button type="button" class="umix-toolbar-btn cursor-btn">
-                                <span class="btn-icon">
-                                    <img src="`+imagePath+`/cursor.svg" class="umix-ai-icon" alt="ai-icon">
+                            <button type="button" class="umix-toolbar-btn cursor-btn umix-popup">
+                                <span class="btn-icon umix-popup">
+                                    <img src="`+imagePath+`/cursor.svg" class="umix-ai-icon umix-popup" alt="ai-icon">
                                 </span>
                             </button>
                         </div>
                     </div>
-                    <div class="menu-container" style="display:none">
-                        <a class="view-test-btn">Test Data</a>
-                        <a class="create-test-btn">Create New Test</a>
-                        <a class="logout-btn">Logout</a>
+                    <div class="menu-container umix-popup" style="display:none">
+                        <a class="view-test-btn umix-popup">Test Data</a>
+                        <a class="create-test-btn umix-popup">Create New Test</a>
+                        <a class="logout-btn umix-popup">Logout</a>
                     </div>
-                    <div class="umix-ai-container p-2">
-                        <div class="umix-content-title umix-ai-title">AI Editor</div>
-                        <select name="select-ai-field" id="select-ai-field" class="umix-select">
+                    <div class="umix-ai-container umix-popup p-2">
+                        <div class="umix-content-title umix-popup umix-ai-title">AI Editor</div>
+                        <select name="select-ai-field" id="select-ai-field" class="umix-select umix-popup">
                             <option value="css" name="css">css</option>
                             <option value="javascript" name="javascript">javascript</option>
                         </select>
-                        <textarea placeholder="Describe your design" id="ai-description" rows="3" cols="35" class="umix-textarea umix-ai-description"></textarea>
-                        <button class="umix-create-btn umix-ai-generate-btn">Generate</button>
+                        <textarea placeholder="Describe your design" id="ai-description" rows="3" cols="35" class="umix-textarea umix-ai-description umix-popup"></textarea>
+                        <button class="umix-create-btn umix-ai-generate-btn umix-popup">Generate</button>
                     </div>
-                    <div class="umix-content-container">
-                        <div class="umix-content-title">Create Test</div>
-                        <div class="umix-input-label">Test Name</div>
-                        <input type="text" id="name" name="title" placeholder="Test Name" class="umix-input-title">
-                        <div class="umix-tab">
-                            <button class="umix-tab-links active">Variant A</button><button class="umix-tab-links">Variant B</button>
-                            <div class="umix-tab-content" id="tabA">
-                            <select name="select-tabA" id="select-tabA" class="umix-select">
-                                <option value="css" name="css">css</option>
-                                <option value="javascript" name="javascript">javascript</option>
-                            </select>
-                            <textarea id="cssA" rows="6" cols="35" class="umix-textarea"></textarea>
+                    <div class="umix-content-container umix-popup">
+                        <div class="umix-content-title umix-popup">Create Test</div>
+                        <div class="umix-input-label umix-popup">Test Name</div>
+                        <input type="text" id="name" name="title" placeholder="Test Name" class="umix-input-title umix-popup">
+                        <div class="umix-tab umix-popup">
+                            <button class="umix-tab-links active">Variant A</button><button class="umix-tab-links umix-popup">Variant B</button>
+                            <div class="umix-tab-content umix-popup" id="tabA">
+                                <select name="select-tabA" id="select-tabA" class="umix-select umix-popup">
+                                    <option value="css" name="css">css</option>
+                                    <option value="javascript" name="javascript">javascript</option>
+                                </select>
+                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-popup"></textarea>
                             </div>
-                            <div class="umix-tab-content" id="tabB">
-                            <select name="select-tabB" id="select-tabB" class="umix-select">
-                                <option value="css" name="css">css</option>
-                                <option value="javascript" name="javascript">javascript</option>
-                            </select>
-                            <textarea id="cssA" rows="6" cols="35" class="umix-textarea"></textarea>
+                            <div class="umix-tab-content umix-popup" id="tabB">
+                                <select name="select-tabB" id="select-tabB" class="umix-select umix-popup">
+                                    <option value="css" name="css">css</option>
+                                    <option value="javascript" name="javascript">javascript</option>
+                                </select>
+                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-popup"></textarea>
                             </div>
                         </div>
-                        <div class="umix-button-group"><button class="umix-create-btn umix-ai-create-btn">Create A/B Test</button></div>
-                        <button class="umix-flying-btn">
-                            <span class="btn-icon">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path d="M6 12H18M18 12L13 7M18 12L13 17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </g>
-                            </svg>
-                            </span>
-                        </button>
+                        <div class="umix-button-group umix-popup">
+                            <button class="umix-create-btn umix-ai-create-btn umix-popup">Create A/B Test</button></div>
+                            <button class="umix-flying-btn umix-popup">
+                                <span class="btn-icon umix-popup">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path d="M6 12H18M18 12L13 7M18 12L13 17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                </svg>
+                                </span>
+                            </button>
+                        </div>
                     </div>
+            </div>
+            <div class="view-container umix-popup" style="display: none;">
+                <button class="back-test umix-popup">Back</button>
+                <br>
+                <div class="test-title umix-popup"></div>
+                <canvas id="conversion" class="m-1 rounded" height = "220" style="background-color:#E9E9E9"></canvas>
+                <canvas id="event" class="m-1 rounded" height = "220" style="background-color:#E9E9E9"></canvas>
+                <canvas id="bounce" class="m-1 rounded" height = "220" style="background-color:#E9E9E9"></canvas>
+                <canvas id="session" class="m-1 rounded" height = "220" style="background-color:#E9E9E9"></canvas>
+            </div>
+            <div class="test-container umix-popup" style="display:none">
+                <div class="test-header umix-popup" style="display: flex; justify-content: space-between">
+                    <span><strong style="color: black">A/B Tests</strong></span>
+                    <a class="back-create">Back</button>
+                </div>
+                <div class="test-body umix-popup"></div>
+                <div class="test-footer umix-popup">
+                    <button class="btn btn-create-test btn-block umix-popup">Create A/B Test</button>
                 </div>
             </div>
         </div>`
 
     $("body").append(content);
+
     chrome.storage.local.get("access_token").then((result) =>{
         if(Object.keys(result).length != 0){
             $(".loginContainer").css("display", "none");
             $(".umix-final-container").css("display", "block")
         }
     });
+
+    $(".btn-create-test").click(function(){
+        $(".umix-ai-container").css("display","block");
+        $(".test-container").css("display","none");
+        $(".umix-content-container").css("display","block");
+    });
+
     $("#redirectSignupBtn").click(function(){
         $("#loginContainer").css("display","none");
         $("#signupContainer").css("display", "block");
@@ -167,22 +185,39 @@ $(document).ready(function (){
             $(".arrow-btn").css({ WebkitTransform: 'rotate(0deg)'});
         }
     })
+    $(".logout-btn").click(function(){
+        chrome.storage.local.clear(function(){
+            var error = chrome.runtime.lastError;
+            if(error){
+                console.log(error);
+            }else{
+                localStorage.setItem("toggle", false);
+                $(".loginContainer").css("display", "block");
+                $(".umix-final-container").css("display", "none");
+                $(".test-container").css("display","none");
+                $(".view-container").css("display","none");
+                $(".menu-container").css("display","none");
+            }
+        })
+    })
     $(".view-test-btn").click(function(){
+        $(".umix-ai-container").css("display","none");
+        $(".umix-content-container").css("display","none");
         chrome.storage.local.get("access_token").then((temp) =>{
             chrome.runtime.sendMessage({message: 'tests', payload: {"token":temp.access_token}}, response => {
                 if(response){
                     // $(".test-title").html()
                     $(".menu-container").css("display", "none");
                     response.forEach((element, index) => {
-                        let str = `<div class="card m-1 test-data">
-                            <div class="card-body">
-                            <h5 class="card-title">`+element.title+`</h5>
-                            <a class="view-data view-btn-`+index+`" data-record="`+element.record_id+`">View Data</button>
+                        let str = `<div class="card m-1 test-data umix-popup">
+                            <div class="card-body umix-popup">
+                            <h5 class="card-title umix-popup">`+element.title+`</h5>
+                            <a class="view-data view-btn-`+index+` umix-popup" data-record="`+element.record_id+`">View Data</button>
                             <br>
-                            <span class="error-view-`+index+`"</span>
+                            <span class="error-view-`+index+` umix-popup"</span>
                             </div>
                         </div>`
-                        $(".test-container").append(str);
+                        $(".test-body").append(str);
                         $(".test-container").css("display","block");
                         $(".view-btn-"+index).click(function(){
                             var record_id = $(this).attr("data-record");
@@ -193,13 +228,22 @@ $(document).ready(function (){
                                 }else{
                                     $(".view-container").css("display","block");
                                     $(".test-container").css("display","none");
-                                    console.log(JSON.parse(response.data));
                                     var conversionSet = getData(JSON.parse(response.data), "conversion");
                                     const conversion = $("#conversion");
                                     new Chart(conversion, {
                                         type: 'bar',
                                         data: conversionSet,
                                         options: {
+                                            scales: {
+                                                y:{
+                                                    barPercentage: 0.4,
+                                                    barThickness: 1
+                                                },
+                                                x:{
+                                                    barPercentage: 0.4,
+                                                    barThickness: 1
+                                                }
+                                            },
                                             indexAxis: 'y', // <-- here
                                             responsive: true,
                                             elements: {
@@ -386,15 +430,17 @@ $(document).ready(function (){
             openTab(event, "tabA", 1)
         }
     });
+    $(".create-test-btn").click(function(){
+        $(".menu-container").css("display","none");
+        $(".umix-ai-container").css("display","none");
+        $(".umix-content-container").css("display","block");
+        $(".test-container").css("display","none");
+    });
 
     $(".plus-btn").click(function (){
-        
         $(".umix-content-container").css("display","block");
         $(".umix-ai-container").css("display","none");
-    })
-    $(".cursor-btn").click(function (event) {
-        $(".umix-content-container").css("display","none");
-        $(".umix-ai-container").css("display","block");
+        $(".test-container").css("display", "none");
     });
     
     $(".umix-ai-generate-btn").click(function () {
@@ -420,6 +466,24 @@ $(document).ready(function (){
             })
         }
     });
+    $(".cursor-btn").click(function () {
+        $(".umix-content-container").css("display","none");
+        $(".umix-ai-container").css("display","block");
+        const currentToggle = localStorage.getItem("toggle");
+        localStorage.setItem("toggle", currentToggle === "true" ? "false" : "true");
+        isOn = !isOn;
+        if (!isOn) {
+            isClicked = false;
+            if (currentPopup) {
+                currentPopup.remove();
+                currentPopup = null;
+            }
+            if (selectedElement) {
+                selectedElement.classList.remove("highlight-on-hover");
+            }
+            selectedElement = null;
+        }
+    });
     
     $(".umix-ai-create-btn").click(function () {
         var inputTitle = $(".umix-input-title").val();
@@ -435,121 +499,7 @@ $(document).ready(function (){
                     })
                 }
             }, response => {
-                chrome.runtime.sendMessage({message: 'tests', payload: {"token":temp.access_token}}, response => {
-                    if(response){
-                        $(".umix-content-container").css("display", "none");
-                        response.forEach((element, index) => {
-                            let str = `<div class="card m-1" style="width: 18rem;">
-                                <div class="card-body">
-                                <h5 class="card-title">`+element.title+`</h5>
-                                <button class="btn btn-primary view-btn-`+index+`" data-record="`+element.record_id+`">View Data</button>
-                                <br>
-                                <span class="error-view-`+index+`"</span>
-                                </div>
-                            </div>`
-                            $(".test-container").append(str);
-                            $(".test-container").css("display","block");
-                            $(".view-btn-"+index).click(function(){
-                                var record_id = $(this).attr("data-record");
-                                chrome.runtime.sendMessage({message: 'view', payload: {record_id, temp}}, response => {
-                                    if(response.detail){
-                                        $(".error-view-"+index).html(response.detail);
-                                        $(".error-view-"+index).css("color","red");
-                                    }else{
-                                        $(".view-container").css("display","block");
-                                        $(".test-container").css("display","none");
-                                        var conversionSet = getData(JSON.parse(response.data), "conversion");
-                                        const conversion = $("#conversion");
-                                        new Chart(conversion, {
-                                            type: 'bar',
-                                            data: conversionSet,
-                                            options: {
-                                                indexAxis: 'y', // <-- here
-                                                responsive: true,
-                                                elements: {
-                                                    bar: {
-                                                      borderWidth: 2,
-                                                    }
-                                                },
-                                                plugins: {
-                                                    legend: {
-                                                      position: 'bottom',
-                                                    },
-                                                    title: {
-                                                      display: true,
-                                                      text: 'Conversion Rate %'
-                                                    }
-                                                }
-                                            }
-
-                                        });
-
-                                        var eventSet = getData(JSON.parse(response.data), "event");
-                                        const event = $("#event");
-                                        new Chart(event, {
-                                            type: 'bar',
-                                            data: eventSet,
-                                            options: {
-                                                indexAxis: 'y', // <-- here
-                                                responsive: true,
-                                                plugins: {
-                                                    legend: {
-                                                      position: 'bottom',
-                                                    },
-                                                    title: {
-                                                      display: true,
-                                                      text: 'Avg. Event count'
-                                                    }
-                                                }
-                                            }
-                                        });
-
-                                        var bounceSet = getData(JSON.parse(response.data), "bounce");
-                                        const bounce = $("#bounce");
-                                        new Chart(bounce, {
-                                            type: 'bar',
-                                            data: bounceSet,
-                                            options: {
-                                                indexAxis: 'y', // <-- here
-                                                responsive: true,
-                                                plugins: {
-                                                    legend: {
-                                                      position: 'bottom',
-                                                    },
-                                                    title: {
-                                                      display: true,
-                                                      text: 'Bounce Rate %'
-                                                    }
-                                                }
-                                            }
-                                        });
-
-                                        var sessionSet = getData(JSON.parse(response.data), "session");
-                                        const session = $("#session");
-                                        new Chart(session, {
-                                            type: 'bar',
-                                            data: sessionSet,
-                                            options: {
-                                                indexAxis: 'y', // <-- here
-                                                responsive: true,
-                                                plugins: {
-                                                    legend: {
-                                                      position: 'bottom',
-                                                    },
-                                                    title: {
-                                                      display: true,
-                                                      text: 'Session Duration'
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    }
-                                })
-                                
-                            })
-                        });
-                    }
-                });
+                    console.log(response);
                 }
             )})
         }
@@ -561,11 +511,12 @@ const appendScript = s => document.head.appendChild(document.createElement("scri
 
 function getData(res, type){
     var datasets = [];
-    var title = "";
-    res.forEach(el => {
+    var colors = ["#A9E0F1", "#F5D6FF", "#ebdf84"];
+    var borders = ["#1686AA","#7E269A","#f7db07"]
+    res.forEach((el, index) => {
         const color = Math.floor(Math.random()*16777215).toString(16);
         const bgcolor = Math.floor(Math.random()*16777215).toString(16);
-        var data = {label: el.Variant, borderColor: "#"+bgcolor, backgroundColor: "#"+color}
+        var data = {label: el.Variant, borderColor: borders[index], backgroundColor: colors[index]}
         switch(type){
             case  "conversion":
                 data.data = [el.Average_Conversion_Rate.slice(0, -1)];
@@ -618,7 +569,7 @@ function openTab(event, target, flag) {
 }
 
 // window.onload = function () {
-//     import(chrome.runtime.getURL("js-confetti.min.js")).then((module) => {
+//     import(chrome.runtime.getURL("js/js-confetti.min.js")).then((module) => {
 //         document.jsConfetti = new module.default();
 //     });
 // };
@@ -883,7 +834,6 @@ function openTab(event, target, flag) {
 //     selectAIField.value = selectTabB.options[selectTabB.selectedIndex].text;
 // }
 
-// let isOn = false;
 
 // function openTab(event, target, flag) {
 //     currentTabId = target
@@ -1009,9 +959,10 @@ function openTab(event, target, flag) {
 //     }
 // }, false);
 
-// img.addEventListener("click", function () {
+// $(".cursor-btn").click(function () {
 //     const currentToggle = localStorage.getItem("toggle");
 //     localStorage.setItem("toggle", currentToggle === "true" ? "false" : "true");
+//     console.log(localStorage.getItem("toggle"));
 //     isOn = !isOn;
 //     if (!isOn) {
 //         isClicked = false;
@@ -1024,9 +975,9 @@ function openTab(event, target, flag) {
 //         }
 //         selectedElement = null;
 //     }
-//     document.jsConfetti.addConfetti({});
-//     document.jsConfetti.addConfetti({});
-//     document.jsConfetti.addConfetti({});
+//     // document.jsConfetti.addConfetti({});
+//     // document.jsConfetti.addConfetti({});
+//     // document.jsConfetti.addConfetti({});
 // });
 // document.jsConfetti.addConfetti({});
 // document.jsConfetti.addConfetti({});
@@ -1055,173 +1006,176 @@ function openTab(event, target, flag) {
 // // Append the button to the document body
 // document.body.appendChild(img);
 
-// let selectedElement = null;
-// let currentPopup = null;
-// let isClicked = false;
+let selectedElement = null;
+let currentPopup = null;
+let isClicked = false;
 
-// function extractHtmlContent(mixedString) {
-//     // Match all HTML tags and their content
-//     const matches = mixedString.match(/<[^>]*>[^<]*<\/[^>]*>|<[^/>]+\/>/g);
+function extractHtmlContent(mixedString) {
+    // Match all HTML tags and their content
+    const matches = mixedString.match(/<[^>]*>[^<]*<\/[^>]*>|<[^/>]+\/>/g);
 
-//     // If matches are found, join them to form the pure HTML content; otherwise, return an empty string
-//     return matches ? matches.join("") : "";
-// }
+    // If matches are found, join them to form the pure HTML content; otherwise, return an empty string
+    return matches ? matches.join("") : "";
+}
 
-// function cleanHtml(str) {
-//     str = str.split(/\>[ ]?\</).join(">\n<");
-//     str = str.split(/([*]?\{|\}[*]?\{|\}[*]?)/).join("\n");
-//     str = str.split(/[*]?\;/).join("\;\n    ");
-//     return str;
-// }
+function cleanHtml(str) {
+    str = str.split(/\>[ ]?\</).join(">\n<");
+    str = str.split(/([*]?\{|\}[*]?\{|\}[*]?)/).join("\n");
+    str = str.split(/[*]?\;/).join("\;\n    ");
+    return str;
+}
 
-// document.addEventListener("mouseover", (e) => {
-//     if (isClicked) return;
-//     if (e.target?.className.includes("umix-popup")) return;
+document.addEventListener("mouseover", (e) => {
+    const currentToggle = localStorage.getItem("toggle");
+    if(currentToggle == "false") return;
+    if (isClicked) return;
+    if (e.target?.className.includes("umix-popup")) return;
 
-//     // check if the mouse is over the variable named img
-//     if (e.target === img) return;
+    // check if the mouse is over the variable named img
+    // if (e.target === img) return;
 
-//     const x = e.clientX;
-//     const y = e.clientY;
-//     const element = document.elementFromPoint(x, y);
+    const x = e.clientX;
+    const y = e.clientY;
+    const element = document.elementFromPoint(x, y);
 
-//     if (selectedElement) {
-//         selectedElement.classList.remove("highlight-on-hover");
-//     }
+    if (selectedElement) {
+        selectedElement.classList.remove("highlight-on-hover");
+    }
 
-//     selectedElement = element;
+    selectedElement = element;
 
-//     // Add highlight effect to the selected element
-//     selectedElement.classList.add("highlight-on-hover");
-// });
+    // Add highlight effect to the selected element
+    selectedElement.classList.add("highlight-on-hover");
+});
 
-// document.addEventListener("keydown", function (event) {
-//     if (event.key === "Escape") {
-//         isClicked = false;
-//         if (currentPopup) {
-//             currentPopup.remove();
-//             currentPopup = null;
-//         }
-//         if (selectedElement) {
-//             selectedElement.classList.remove("highlight-on-hover");
-//         }
-//         selectedElement = null;
-//     }
-// });
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        isClicked = false;
+        if (currentPopup) {
+            currentPopup.remove();
+            currentPopup = null;
+        }
+        if (selectedElement) {
+            selectedElement.classList.remove("highlight-on-hover");
+        }
+        selectedElement = null;
+    }
+});
 
-// document.addEventListener("dblclick", (e) => {
-//     if (e.target === img) return;
+document.addEventListener("dblclick", (e) => {
+    // if (e.target === img) return;
 
-//     if (
-//         currentPopup &&
-//         selectedElement &&
-//         e.target !== selectedElement &&
-//         !selectedElement.contains(e.target) &&
-//         e.target !== currentPopup &&
-//         !currentPopup.contains(e.target)
-//     ) {
-//         isClicked = false;
-//         if (currentPopup) {
-//             currentPopup.remove();
-//             currentPopup = null;
-//         }
-//         if (selectedElement) {
-//             selectedElement.classList.remove("highlight-on-hover");
-//         }
-//         selectedElement = null;
-//         return;
-//     }
+    if (
+        currentPopup &&
+        selectedElement &&
+        e.target !== selectedElement &&
+        !selectedElement.contains(e.target) &&
+        e.target !== currentPopup &&
+        !currentPopup.contains(e.target)
+    ) {
+        isClicked = false;
+        if (currentPopup) {
+            currentPopup.remove();
+            currentPopup = null;
+        }
+        if (selectedElement) {
+            selectedElement.classList.remove("highlight-on-hover");
+        }
+        selectedElement = null;
+        return;
+    }
 
-//     isClicked = true;
+    isClicked = true;
 
-//     if (!selectedElement) return;
-//     let currentEl = selectedElement;
-//     if (
-//         e.target?.className.includes("umix-popup") ||
-//         !selectedElement.className.includes("highlight-on-hover")
-//     )
-//         return;
-//     if (currentPopup) {
-//         currentPopup.remove();
-//         currentPopup = null;
-//     }
+    if (!selectedElement) return;
+    let currentEl = selectedElement;
+    if (
+        e.target?.className.includes("umix-popup") ||
+        !selectedElement.className.includes("highlight-on-hover")
+    )
+        return;
+    if (currentPopup) {
+        currentPopup.remove();
+        currentPopup = null;
+    }
 
-//     // defines text area, button, and popup
-//     const input = document.createElement("textarea");
-//     const button = document.createElement("button");
-//     const popup = document.createElement("div");
+    // defines text area, button, and popup
+    const input = document.createElement("textarea");
+    const button = document.createElement("button");
+    const popup = document.createElement("div");
 
-//     popup.className = "umix-popup umix-container";
-//     button.className = "umix-popup umix-button";
-//     input.className = "umix-popup umix-input";
-//     input.placeholder =
-//         "Make the text larger or change the colors of this element.";
-//     input.style.color = "black";
-//     button.style.color = "black";
-//     popup.style.position = "fixed";
-//     const x = e.clientX;
-//     const y = e.clientY;
-//     popup.style.left = `${x}px`;
-//     popup.style.top = `${y}px`;
-//     popup.style.zIndex = "99999";
+    popup.className = "umix-popup umix-container";
+    button.className = "umix-popup umix-button";
+    input.className = "umix-popup umix-input";
+    input.placeholder =
+        "Make the text larger or change the colors of this element.";
+    input.style.color = "black";
+    button.style.color = "black";
+    popup.style.position = "fixed";
+    const x = e.clientX;
+    const y = e.clientY;
+    popup.style.left = `${x}px`;
+    popup.style.top = `${y}px`;
+    popup.style.zIndex = "99999";
 
-//     const buttonText = `<span class="arrow-icon">
-//         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
-//     </span>`;
+    const buttonText = `<span class="arrow-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
+    </span>`;
 
-//     const callback = () => {
-//         if (!isOn) return;
-//         currentEl.classList.remove("highlight-on-hover");
-//         button.textContent = "Loading...";
-//         fetch(`http://localhost:3001/html`, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({
-//                 html: currentEl.outerHTML,
-//                 description: input.value,
-//             }),
-//         })
-//             .then((response) => response.json()) // Convert the response to JSON
-//             .then((data) => {
-//                 try {
-//                     let html = extractHtmlContent(data.output.output);
-//                     plusBtn.dispatchEvent(new Event('click'));
-//                     html = cleanHtml(html);
-//                     textAreaA.value = html;
+    const callback = () => {
+        if (!isOn) return;
+        currentEl.classList.remove("highlight-on-hover");
+        button.textContent = "Loading...";
+        console.log("This is thetset");
+        fetch(`http://localhost:3001/html`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                html: currentEl.outerHTML,
+                description: input.value,
+            }),
+        })
+            .then((response) => response.json()) // Convert the response to JSON
+            .then((data) => {
+                try {
+                    let html = extractHtmlContent(data.output.output);
+                    plusBtn.dispatchEvent(new Event('click'));
+                    html = cleanHtml(html);
+                    textAreaA.value = html;
 
-//                     const fragment = document.createElement("div");
-//                     fragment.innerHTML = html;
-//                     button.innerHTML = buttonText;
+                    const fragment = document.createElement("div");
+                    fragment.innerHTML = html;
+                    button.innerHTML = buttonText;
 
-//                     currentEl.replaceWith(fragment);
-//                     currentEl = fragment;
-//                 } catch (error) {
-//                     console.error(error);
-//                 }
-//             })
-//             .catch((error) => {
-//                 console.error(error);
-//             });
-//     };
+                    currentEl.replaceWith(fragment);
+                    currentEl = fragment;
+                } catch (error) {
+                    console.error(error);
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
-//     input.onkeypress = (event) => {
-//         if (!isOn) return;
-//         if (event.key === "Enter") {
-//             event.preventDefault(); // Enter no longer makes a new line
-//             callback();
-//         }
-//     };
+    input.onkeypress = (event) => {
+        if (!isOn) return;
+        if (event.key === "Enter") {
+            event.preventDefault(); // Enter no longer makes a new line
+            callback();
+        }
+    };
 
-//     button.onclick = callback;
-//     button.innerHTML = buttonText;
+    button.onclick = callback;
+    button.innerHTML = buttonText;
 
-//     popup.appendChild(input);
-//     popup.appendChild(button);
+    popup.appendChild(input);
+    popup.appendChild(button);
 
-//     document.body.appendChild(popup);
+    document.body.appendChild(popup);
 
-//     currentPopup = popup;
-//     currentEl.classList.add("highlight-on-hover");
-// });
+    currentPopup = popup;
+    currentEl.classList.add("highlight-on-hover");
+});
