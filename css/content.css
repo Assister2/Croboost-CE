@@ -148,9 +148,6 @@ body {
         align-items: center;
         background-color: transparent;
     }
-    .umix-ai-title {
-        margin-bottom: 10px;
-    }
     .logo-container{
         background: #22593F82;
         padding: 0.5rem;
@@ -254,6 +251,11 @@ body {
         transition-duration: 0.4s;
         box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     }
+    .title-header{
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
     .umix-flying-btn:after {
         content: "";
         display: block;
@@ -282,7 +284,6 @@ body {
         font-weight: 700;
         color: white;
         line-height: 19.2px;
-        margin-bottom: 15px;
     }
     .umix-input-label {
         margin-top: 10px;
@@ -343,8 +344,9 @@ body {
     }
     .umix-textarea {
         border-radius: 4px;
+        color: black;
         border-color: rgba(0, 0, 0, 0.16);
-        background: white;
+        background: #e5e0e00f;
         width: 100%;
         padding: 10px 8px;
         box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.06);
@@ -352,6 +354,11 @@ body {
         font-weight: 500;
         line-height: 14px;
         resize: none;
+    }
+    .form-control, select option {
+        color: white !important;
+        background: #e5e0e00f !important;
+        border:none !important;
     }
     .umix-tab-content {
         -webkit-animation: fadeEffect 1s;

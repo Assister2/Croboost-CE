@@ -68,18 +68,16 @@ $(document).ready(function (){
                             <img src="`+imagePath+`/cro.svg" alt="logo" class="umix-popup">
                             <img src="`+imagePath+`/arrow.svg" alt="logo" class="arrow-btn umix-popup">
                         </div>
-                        <div class="umix-toolbar-button-group umix-popup">
-                            <button type="button" class="umix-toolbar-btn plus-btn umix-popup">
-                                <span class="btn-icon umix-popup">
-                                    <img src="`+imagePath+`/plus.svg" class="umix-ai-icon umix-popup" alt="ai-icon">
-                                </span>
-                            </button>
-                            <button type="button" class="umix-toolbar-btn cursor-btn umix-popup">
-                                <span class="btn-icon umix-popup">
-                                    <img src="`+imagePath+`/cursor.svg" class="umix-ai-icon umix-popup" alt="ai-icon">
-                                </span>
-                            </button>
-                        </div>
+                        <button type="button" class="umix-toolbar-btn plus-btn umix-popup">
+                            <span class="btn-icon umix-popup">
+                                <img src="`+imagePath+`/plus.svg" class="umix-ai-icon umix-popup" alt="ai-icon">
+                            </span>
+                        </button>
+                        <button type="button" class="umix-toolbar-btn cursor-btn umix-popup">
+                            <span class="btn-icon umix-popup">
+                                <img src="`+imagePath+`/cursor.svg" class="umix-ai-icon umix-popup" alt="ai-icon" >
+                            </span>
+                        </button>
                     </div>
                     <div class="menu-container umix-popup" style="display:none">
                         <a class="view-test-btn umix-popup">Test Data</a>
@@ -87,18 +85,24 @@ $(document).ready(function (){
                         <a class="logout-btn umix-popup">Logout</a>
                     </div>
                     <div class="umix-ai-container umix-popup p-3">
-                        <div class="umix-content-title umix-popup umix-ai-title">AI Editor</div>
+                        <div class="title-header umix-popup">
+                            <div class="umix-content-title umix-popup umix-ai-title">AI Editor</div>
+                            <img src="`+imagePath+`/close.svg" class="umix-ai-icon umix-popup" style="width: 15px"/>
+                        </div>
                         <label class="form-label umix-popup">Describe your A/B test idea to AI and watch it come to life.</label>
-                        <textarea placeholder="Describe your design" id="ai-description" rows="3" cols="35" class="umix-textarea umix-ai-description umix-popup"></textarea>
+                        <textarea placeholder="Message to AI" id="ai-description" rows="3" cols="35" class="umix-textarea form-control umix-ai-description umix-popup"></textarea>
                         <label class="form-label umix-popup">Type</label>
                         <select name="select-ai-field" id="select-ai-field" class="umix-select umix-popup form-control">
                             <option value="css" name="css">css</option>
                             <option value="javascript" name="javascript">javascript</option>
                         </select>
-                        <button class="umix-create-btn umix-ai-generate-btn btn umix-popup btn-block btn-default">Generate CSS</button>
+                        <button class="umix-create-btn umix-ai-generate-btn  umix-popup btn btn-block btn-default">Generate CSS</button>
                     </div>
                     <div class="umix-content-container umix-popup">
-                        <div class="umix-content-title umix-popup">Create Test</div>
+                        <div class="title-header umix-popup">
+                            <div class="umix-content-title umix-popup">Create Test</div>
+                            <img src="`+imagePath+`/close.svg" class="umix-ai-icon umix-popup" style="width: 15px"/>
+                        </div>
                         <label class="form-label umix-popup">Test Name</label>
                         <input type="text" id="name" name="title" placeholder="Test Name" class="form-control umix-popup">
                         <div class="umix-tab umix-popup">
@@ -108,18 +112,18 @@ $(document).ready(function (){
                                     <option value="css" name="css">css</option>
                                     <option value="javascript" name="javascript">javascript</option>
                                 </select>
-                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup"></textarea>
+                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
                             </div>
                             <div class="umix-tab-content umix-popup" id="tabB">
                                 <select name="select-tabB" id="select-tabB" class="umix-select umix-input-title  umix-popup">
                                     <option value="css" name="css">css</option>
                                     <option value="javascript" name="javascript">javascript</option>
                                 </select>
-                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup"></textarea>
+                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
                             </div>
                         </div>
                         <div class="umix-button-group umix-popup">
-                            <button class="umix-create-btn umix-ai-create-btn umix-popup">Create A/B Test</button></div>
+                            <button class="umix-create-btn umix-ai-create-btn umix-popup btn btn-block btn-default">Create A/B Test</button></div>
                          </div>
                     </div>
             </div>
