@@ -14,35 +14,35 @@ body {
 }
 /* Highlight effect on hover */
 .highlight-on-hover {
-    outline: 2px dashed rgb(65, 134, 246)  !important;
-    background-color: rgba(65, 134, 246, 0.2) !important;
+    outline: 2px dashed rgb(65, 134, 246) ;
+    background-color: rgba(65, 134, 246, 0.2);
 }
 
 .display-block {
-    display: block !important;
+    display: block;
 }
 
 .extension-container{
     position: fixed;
-    width: 300px !important;
+    width: 300px;
     top: 10px;
     right: 10px;
     z-index: 99999;
     text-align: left;
-    width: Hug (279px) !important;
+    width: Hug (279px);
     padding: 18px, 16px, 18px, 16px;
     border-radius: 8px;
     gap: 10px;
 
-    .btn-signin, .btn-signup, .btn-create-test{
+    .btn-signin, .btn-signup, .btn-create-test, .btn-default{
         background-color: #10503D;
         color: white;
-        font-weight: bold !important;
+        font-weight: bold;
     }
     .btn-link{
-        text-decoration: underline !important;
-        color: white !important;
-        font-weight: bold !important;
+        text-decoration: underline;
+        color: white;
+        font-weight: bold;
     }
     .loginContainer, .signupContainer{
         border-radius: 1rem;
@@ -108,50 +108,48 @@ body {
     }
 
     .umix-final-container {
-        color: black !important;
         display: flex;
         justify-content: flex-end;
         align-items: start;
         z-index: 99999;
-        font-weight: 400 !important;
-        opacity: 1 !important;
+        font-weight: 400;
+        opacity: 1;
         text-align: start;
-        font-size: 16px !important;
-        line-height: 16px !important;
+        font-size: 16px;
+        line-height: 16px;
     }
     .umix-logo {
-        height: 34px !important;
-        width: 100% !important;
-        margin: 4px 6px !important;
+        height: 34px;
+        width: 100%;
+        margin: 4px 6px;
     }
     .umix-ai-container {
         display: none;
-        width: 380px !important;
+        width: 100%;
         /* margin-right: 60px;
         margin-top: 80px;
-        padding: 24px !important; */
-        border: 1px solid rgba(192, 192, 192, 1) !important;
-        border-radius: 8px !important;
-        background: rgba(192, 192, 192, 1) !important;
+        padding: 24px; */
+        border: 1px solid rgba(192, 192, 192, 1);
+        border-radius: 8px;
+        background: black;
     }
     .umix-ai-description {
-        border-radius: 4px !important;
-        padding: 16px 16px 32px 16px !important;
-        border: 1px solid rgba(255, 255, 255, 0.21) !important;
-        background: rgba(255, 255, 255, 0.12) !important;
-        font-weight: 400 !important;
-        font-size: 12px !important;
-        color: rgba(0, 0, 0, 0.61) !important;
+        border-radius: 4px;
+        padding: 16px 16px 32px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.21);
+        background: rgba(255, 255, 255, 0.12);
+        font-weight: 400;
+        font-size: 12px;
     }
     .umix-total-container {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: transparent !important;
+        background-color: transparent;
     }
     .umix-ai-title {
-        margin-bottom: 10px !important;
+        margin-bottom: 10px;
     }
     .logo-container{
         background: #22593F82;
@@ -163,13 +161,13 @@ body {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: black !important;
-        border-width: 1px !important;
-        border-style: solid !important;
-        border-color: black !important;
-        border-radius: 8px !important;
-        padding: 10px !important;
-        margin-bottom: 5px !important;
+        background-color: black;
+        border-width: 1px;
+        border-style: solid;
+        border-color: black;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 5px;
     }
     .umix-toolbar-button-group {
         display: flex;
@@ -181,47 +179,47 @@ body {
         justify-content: center;
         align-items: center;
         padding: 15px 15px;
-        height: 34px !important;
+        height: 34px;
         background-color: rgba(255, 255, 255, 0.15);
-        border-width: 4px !important;
-        border-style: solid !important;
-        border-color: black !important;
-        border-radius: 4px !important;
-        text-decoration: none !important;
-        margin: 4px 6px !important;
-        cursor: pointer !important;
-        -webkit-transition-duration: 0.4s !important; /* Safari */
-        transition-duration: 0.4s !important;
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19) !important;
+        border-width: 4px;
+        border-style: solid;
+        border-color: black;
+        border-radius: 4px;
+        text-decoration: none;
+        margin: 4px 6px;
+        cursor: pointer;
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
         /* &:active {
-         transform: scale(0.96) !important;
+         transform: scale(0.96);
         }
         &:before,&:after {
-         position: absolute !important;
+         position: absolute;
          content: "";
-         width: 150% !important;
-         left: 50% !important;
-         height: 100% !important;
-         transform: translateX(-50%) !important;
-         z-index: -1000 !important;
-         background-repeat: no-repeat !important;
+         width: 150%;
+         left: 50%;
+         height: 100%;
+         transform: translateX(-50%);
+         z-index: -1000;
+         background-repeat: no-repeat;
         } */
     }
     .btn-icon {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 15px !important;
-        height: 15px !important;
+        width: 15px;
+        height: 15px;
     }
     .umix-ai-icon {
-        width: 30px !important;
+        width: 30px;
     }
     .umix-content-container {
         width: 100%;
         display: none;
         padding: 18px 16px;
-        background-color: #fff;
+        background-color: black;
         border-width: 1px;
         border-style: solid;
         border-color: black;
@@ -280,28 +278,29 @@ body {
         transition: 0s;
     }
     .umix-content-title {
-        font-size: 16px !important;
-        font-weight: 700 !important;
-        color: black !important;
-        line-height: 19.2px !important;
+        font-size: 16px;
+        font-weight: 700;
+        color: white;
+        line-height: 19.2px;
+        margin-bottom: 15px;
     }
     .umix-input-label {
-        margin-top: 10px !important;
-        margin-bottom: 5px !important;
+        margin-top: 10px;
+        margin-bottom: 5px;
         font-weight: 700;
-        font-size: 10px !important;
-        color: black !important;
-        line-height: 12px !important;
+        font-size: 10px;
+        color: black;
+        line-height: 12px;
     }
     .umix-input-title {
-        width: 100% !important;
-        border-color: rgba(0, 0, 0, 0.16) !important;
-        background: rgba(0, 0, 0, 0.08) !important;
-        border-radius: 4px !important;
-        color: black !important;
-        padding: 4px 8px !important;
-        font-size: 12px !important;
-        box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.06) !important;
+        width: 100%;
+        border-color: rgba(0, 0, 0, 0.16);
+        background: rgba(0, 0, 0, 0.08);
+        border-radius: 4px;
+        color: black;
+        padding: 4px 8px;
+        font-size: 12px;
+        box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.06);
     
     }
     #tabB {
@@ -311,21 +310,21 @@ body {
         margin-top: 10px;
     }
     .umix-tab-links {
-        font-weight: 500 !important;
-        font-size: 12px !important;
-        border: 1px solid white;
-        color: rgba(0, 0, 0, 0.62);
-        padding: 8px !important;
-        border-radius: 8px !important;
+        font-weight: 500;
+        width: 50%;
+        font-size: 12px;
+        color: white;
+        padding: 8px;
+        border-radius: 8px;
         &.hover {
          color: white;
          border: 1px solid black;
-         background-color: black;
+         background-color: #9281a3;
         }
         &.active {
          color: white;
          border: 1px solid black;
-         background-color: black;
+         background-color:#3F2F4E;
         }
         &.visited {
          color: white;
@@ -335,25 +334,24 @@ body {
     }
     .umix-select {
         margin-bottom: 10px;
-        border-radius: 4px !important;
-        padding: 4px 8px !important;
-        border: 1px solid rgba(198, 198, 198, 1) !important;
-        color: rgba(48, 48, 48,1) !important;
-        font-size: 12px !important;
-        font-weight: 500 !important;
+        border-radius: 4px;
+        padding: 4px 8px;
+        border: 1px solid rgba(198, 198, 198, 1);
+        color: rgba(48, 48, 48,1);
+        font-size: 12px;
+        font-weight: 500;
     }
     .umix-textarea {
-        border-radius: 4px !important;
-        border-color: rgba(0, 0, 0, 0.16) !important;
-        background: rgba(0, 0, 0, 0.08) !important;
+        border-radius: 4px;
+        border-color: rgba(0, 0, 0, 0.16);
+        background: white;
         width: 100%;
         padding: 10px 8px;
-        box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.06) !important;
-        font-size: 12px !important;
-        font-weight: 500 !important;
-        color: rgba(0, 0, 0, 0.8) !important;
-        line-height: 14px !important;
-        resize: none !important;
+        box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.06);
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 14px;
+        resize: none;
     }
     .umix-tab-content {
         -webkit-animation: fadeEffect 1s;
@@ -361,19 +359,19 @@ body {
         margin-top: 10px;
     }
     .umix-create-btn {
-        position: relative !important;
-        width: 100% !important;
-        padding: 8px !important;
-        margin-top: 10px !important;
-        height: 31px !important;
-        border-radius: 4px !important;
-        background: rgba(16, 80, 61, 1) !important;
-        text-decoration: none !important;
-        overflow: hidden !important;
-        font-weight: 700 !important;
-        font-size: 12px !important;
+        position: relative;
+        width: 100%;
+        padding: 8px;
+        margin-top: 10px;
+        height: 31px;
+        border-radius: 4px;
+        background: rgba(16, 80, 61, 1);
+        text-decoration: none;
+        overflow: hidden;
+        font-weight: 700;
+        font-size: 12px;
         text-align: center;
-        color: white !important;
+        color: white;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -387,7 +385,7 @@ body {
          position: absolute;
          padding-top: 300%;
          padding-left: 350%;
-         margin-left: -20px!important;
+         margin-left: -20p;
          margin-top: -120%;
          opacity: 0;
          transition: all 0.8s

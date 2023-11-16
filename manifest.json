@@ -25,7 +25,7 @@
     },
     "web_accessible_resources": [
       {
-        "resources": ["images/cro.svg", "images/arrow.svg", "images/cursor.svg", "images/plus.svg", "js/js-confetti.min.js", "js/jquery.js"],
+        "resources": ["images/cro.svg", "images/arrow.svg", "images/cursor.svg", "images/plus.svg", "images/close.svg", "js/js-confetti.min.js", "js/jquery.js"],
         "matches": ["<all_urls>"]
       }
     ]
