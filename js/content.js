@@ -106,20 +106,29 @@ $(document).ready(function (){
                         <label class="form-label umix-popup">Test Name</label>
                         <input type="text" id="name" name="title" placeholder="Test Name" class="form-control umix-popup">
                         <div class="umix-tab umix-popup">
-                            <button class="umix-tab-links active">Variant A</button><button class="umix-tab-links umix-popup">Variant B</button>
-                            <div class="umix-tab-content umix-popup" id="tabA">
-                                <select name="select-tabA" id="select-tabA" class="umix-select umix-input-title  umix-popup">
-                                    <option value="css" name="css">css</option>
-                                    <option value="javascript" name="javascript">javascript</option>
-                                </select>
-                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
-                            </div>
-                            <div class="umix-tab-content umix-popup" id="tabB">
-                                <select name="select-tabB" id="select-tabB" class="umix-select umix-input-title  umix-popup">
-                                    <option value="css" name="css">css</option>
-                                    <option value="javascript" name="javascript">javascript</option>
-                                </select>
-                                <textarea id="cssA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
+                            <ul id="myTab" class="nav nav-tabs">
+                                <li class="umix-tab-links umix-popup variant-a active"><a href="#variantA" data-toggle="tab" class="umix-popup">Variant A</a></li>
+                                <li class="umix-tab-links umix-popup variant-b"><a href="#variantB" data-toggle="tab" class="umix-popup">Variant B</a></li>
+                            </ul>
+                            <div id="myTabContent" class="tab-content">
+                                <div class="tab-pane active in" id="variantA">
+                                    <div class="umix-tab-content umix-popup">
+                                        <select name="select-tabA" id="select-tabA" class="umix-select umix-input-title  umix-popup">
+                                            <option value="css" name="css">css</option>
+                                            <option value="javascript" name="javascript">javascript</option>
+                                        </select>
+                                        <textarea id="descriptionA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="variantB">
+                                    <div class="umix-tab-content umix-popup">
+                                        <select name="select-tabB" id="select-tabB" class="umix-select umix-input-title  umix-popup">
+                                            <option value="css" name="css">css</option>
+                                            <option value="javascript" name="javascript">javascript</option>
+                                        </select>
+                                        <textarea id="descriptionB" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="umix-button-group umix-popup">
@@ -438,7 +447,13 @@ $(document).ready(function (){
         $(".menu-container").css("display","none");
         $(".test-container").css("display", "none");
     });
-    
+    $("#select-ai-field").change(function(){
+        if($("#select-ai-field").val() == "css"){
+            $(".umix-ai-generate-btn").html("Generate CSS");
+        }else{
+            $(".umix-ai-generate-btn").html("Generate javascript");
+        }
+    })
     $(".umix-ai-generate-btn").click(function () {
         let currentSelectAIOption = $("#select-ai-field").val();
         currentAIDescription = $("#ai-description").val();
@@ -482,15 +497,25 @@ $(document).ready(function (){
     });
     
     $(".umix-ai-create-btn").click(function () {
-        var inputTitle = $(".umix-input-title").val();
-        currentTextAreaAStr = $(".umix-textarea").val();
+        var title = $("#name").val();
+        var type, description  = "";
+        if(currentTabId == "tabA"){
+            type = $("#select-tabA").val();
+            description = $("#descriptionA").val();
+        }else{
+            type = $("#select-tabB").val();
+            description = $("#descriptionB").val();
+        }
+        // var inputTitle = $(".umix-input-title").val();
+        // currentTextAreaAStr = $(".umix-textarea").val();
         if (inputTitle && currentTextAreaAStr) {
             chrome.storage.local.get("access_token").then((temp) =>{
                 chrome.runtime.sendMessage({message: 'createTest', payload: {
                     token: temp, 
                     data: JSON.stringify({
-                        title: inputTitle,
-                        data: currentTextAreaAStr,
+                        title: title,
+                        type: type,
+                        data: description,
                         is_live: false
                     })
                 }
@@ -500,8 +525,26 @@ $(document).ready(function (){
             )})
         }
     });
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target).attr("href") // activated tab
+        if(target == "#variantA"){
+            currentTabId = "tabA";
+            $(".variant-b").removeClass("active");
+            $(".variant-a").addClass("active");
+        }else{
+            currentTabId = "tabB";
+            $(".variant-a").removeClass("active");
+            $(".variant-b").addClass("active");
+        }
+    });
     
 })
+
+function tabActive(index){
+    if(index == 1){
+
+    }
+}
 const appendCSS = s => document.head.appendChild(document.createElement("style")).innerHTML = s;
 const appendScript = s => document.head.appendChild(document.createElement("script")).innerHTML = s;
 
@@ -510,8 +553,6 @@ function getData(res, type){
     var colors = ["#A9E0F1", "#F5D6FF", "#ebdf84"];
     var borders = ["#1686AA","#7E269A","#f7db07"]
     res.forEach((el, index) => {
-        const color = Math.floor(Math.random()*16777215).toString(16);
-        const bgcolor = Math.floor(Math.random()*16777215).toString(16);
         var data = {label: el.Variant, borderColor: borders[index], backgroundColor: colors[index]}
         switch(type){
             case  "conversion":
@@ -658,13 +699,23 @@ document.addEventListener("dblclick", (e) => {
     }
 
     // defines text area, button, and popup
+    const select = document.createElement("select");
+    const opt1 =  document.createElement("option");
+    opt1.value = "css";
+    opt1.innerHTML  = "css";
+    const opt2 =  document.createElement("option");
+    opt2.value = "html";
+    opt2.innerHTML  = "html";
+    select.append(opt1);
+    select.append(opt2);
     const input = document.createElement("textarea");
     const button = document.createElement("button");
     const popup = document.createElement("div");
 
     popup.className = "umix-popup umix-container";
-    button.className = "umix-popup umix-button";
-    input.className = "umix-popup umix-input";
+    button.className = "umix-popup umix-button form-control";
+    input.className = "umix-popup umix-input form-control";
+    select.className = "umix-popup umix-select form-control";
     input.placeholder =
         "Make the text larger or change the colors of this element.";
     input.style.color = "black";
@@ -676,9 +727,7 @@ document.addEventListener("dblclick", (e) => {
     popup.style.top = `${y}px`;
     popup.style.zIndex = "99999";
 
-    const buttonText = `<span class="arrow-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
-    </span>`;
+    const buttonText = `Generate AI`;
 
     const callback = () => {
         if (!isOn) return;
@@ -728,7 +777,7 @@ document.addEventListener("dblclick", (e) => {
 
     button.onclick = callback;
     button.innerHTML = buttonText;
-
+    popup.appendChild(select);
     popup.appendChild(input);
     popup.appendChild(button);
 
