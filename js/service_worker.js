@@ -1,6 +1,9 @@
+var backendUrl = "http://localhost:3001/";
+var apiUrl = "https://api.croboost.ai/v1/";
+
 chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) {
     if (message.message === "login") {
-        fetch('https://api.croboost.ai/v1/auth/manual/login', {
+        fetch(apiUrl + 'auth/manual/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -14,7 +17,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
     }
 
     if (message.message === "signup") {
-        fetch('https://api.croboost.ai/v1/auth/manual/signup', {
+        fetch(apiUrl + 'auth/manual/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +35,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
         })
     }
     if (message.message === "tests") {
-        fetch('https://api.croboost.ai/v1/ab/tests/', {
+        fetch(apiUrl+'ab/tests/', {
             method: 'GET',
             headers: {
                 'Authorization': "Bearer "+ message.payload.token
@@ -44,7 +47,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
         })
     }
     if (message.message === "view") {
-        fetch('https://api.croboost.ai/v1/metrics/'+message.payload.record_id, {
+        fetch(apiUrl+'metrics/'+message.payload.record_id, {
             method: 'GET',
             headers: {
                 'Authorization': "Bearer "+ message.payload.temp.access_token
@@ -58,7 +61,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
 
     if (message.message === "createTest") {
         console.log(message.payload.data);
-        fetch('https://api.croboost.ai/v1/ab/tests/', {
+        fetch(apiUrl+'ab/tests/', {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer "+ message.payload.token.access_token
@@ -72,7 +75,20 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
     }
 
     if (message.message === "getAi") {
-        fetch('http://localhost:3001/'+message.payload.aiOption, {
+        fetch(backendUrl+message.payload.aiOption, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: message.payload.data
+        }).then(res => {
+            return res.json();
+        }).then(res => {
+            senderResponse(res);
+        })
+    }
+    if (message.message === "html") {
+        fetch(backendUrl+'html', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",

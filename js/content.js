@@ -733,38 +733,57 @@ document.addEventListener("dblclick", (e) => {
         if (!isOn) return;
         currentEl.classList.remove("highlight-on-hover");
         button.textContent = "Loading...";
-        console.log("This is thetset");
-        fetch(`http://localhost:3001/html`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+        chrome.runtime.sendMessage({message: 'html', payload: {data: JSON.stringify({
                 html: currentEl.outerHTML,
                 description: input.value,
-            }),
-        })
-            .then((response) => response.json()) // Convert the response to JSON
-            .then((data) => {
+            })}}, response => {
                 try {
-                    let html = extractHtmlContent(data.output.output);
-                    plusBtn.dispatchEvent(new Event('click'));
-                    html = cleanHtml(html);
-                    textAreaA.value = html;
+                let html = extractHtmlContent(response.output.output);
+                plusBtn.dispatchEvent(new Event('click'));
+                html = cleanHtml(html);
+                textAreaA.value = html;
 
-                    const fragment = document.createElement("div");
-                    fragment.innerHTML = html;
-                    button.innerHTML = buttonText;
+                const fragment = document.createElement("div");
+                fragment.innerHTML = html;
+                button.innerHTML = buttonText;
 
-                    currentEl.replaceWith(fragment);
-                    currentEl = fragment;
-                } catch (error) {
-                    console.error(error);
-                }
-            })
-            .catch((error) => {
+                currentEl.replaceWith(fragment);
+                currentEl = fragment;
+            } catch (error) {
                 console.error(error);
-            });
+            }
+        })
+        // fetch(`http://localhost:3001/html`, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //         html: currentEl.outerHTML,
+        //         description: input.value,
+        //     }),
+        // })
+        //     .then((response) => response.json()) // Convert the response to JSON
+        //     .then((data) => {
+        //         try {
+        //             let html = extractHtmlContent(data.output.output);
+        //             plusBtn.dispatchEvent(new Event('click'));
+        //             html = cleanHtml(html);
+        //             textAreaA.value = html;
+
+        //             const fragment = document.createElement("div");
+        //             fragment.innerHTML = html;
+        //             button.innerHTML = buttonText;
+
+        //             currentEl.replaceWith(fragment);
+        //             currentEl = fragment;
+        //         } catch (error) {
+        //             console.error(error);
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error(error);
+        //     });
     };
 
     input.onkeypress = (event) => {
