@@ -1,14 +1,90 @@
 localStorage.setItem("toggle", false);
-
 // // Global variable
-
 let currentTabId = "tabA";
 let currentTextAreaAStr = "";
 let currentTextAreaBStar = "";
 let currentAIDescription = "";
+let viewData_title = "";
 var imagePath = chrome.runtime.getURL("images");
 let isOn = false;
 
+const TestNames = ["Original", "Variant"];
+
+  const constructSnowplowStorageAdapter = () => `{
+    onExposure: function(obj){
+      snowplow('trackSelfDescribingEvent', {
+        event: {
+          schema: 'iglu:io.mintmetrics.mojito/mojito_exposure/jsonschema/1-0-0',
+          data: {
+            'waveId': obj.options.id,
+            'waveName': obj.options.name,
+            'recipe': obj.chosenRecipe.name
+          }
+        }
+      });
+    },
+    onVeilTimeout: function(obj, ultimateRecipe){},
+    onRecipeFailure: function(obj, err){
+      snowplow('trackSelfDescribingEvent', {
+        event: {
+          schema: 'iglu:io.mintmetrics.mojito/mojito_failure/jsonschema/1-0-0',
+          data: {
+            'waveId': obj.options.id,
+            'waveName': obj.options.name,
+            'component': obj.chosenRecipe.name || 'trigger',
+            'error': err
+          }
+        }
+      });
+      // Refresh the page unless we're in a trigger or preview mode
+      var preview = document.location.search.indexOf('mojito_' + obj.options.id + '=' + obj.chosenRecipe.id) > -1;
+      if (obj.chosenRecipe.name && !obj.options.divertTo && !preview) {
+        // Disable the experiment on future page loads, and refresh
+        Mojito.Cookies.set('_mojito_' + obj.options.id + (obj.options.state === 'live'?'':'-staging'), '0.0');
+        setTimeout(function(){
+          window.location.reload();
+        }, 500);
+      }
+    }
+  }`
+  function constructTest(data) {
+    return `Mojito.addTest({
+      id: "${data.id}",
+      name: "${data.name}",
+      sampleRate: ${data.sampleRate},
+      state: "live",
+      description:"${data.description}",
+      trigger: ${data.trigger},
+      recipes: {
+      "0": {
+        name: "Original",
+        ${data.Original.codeJS &&
+      `js: function () {
+          ${data.Original.codeJS}
+        },`
+      }
+        ${data.Original.codeCSS && `css: \`${data.Original.codeCSS}\`,`}
+      },
+    ${[data.Variant]
+        .map(
+          (plan, i) => `
+      "${i + 1}": {
+        name: "${TestNames[i + 1]}",
+        ${plan.codeJS &&
+            `js: function () {
+          ${plan.codeJS}
+        },`
+            }
+        ${plan.codeCSS && `css: \`${plan.codeCSS}\`,`}
+      },`
+        )
+        .join("\n")}
+    },
+    options: {
+      storageAdapter: ${constructSnowplowStorageAdapter()}
+    }
+  });`;
+  }
 
 $(document).ready(function (){
     var content = `
@@ -93,13 +169,14 @@ $(document).ready(function (){
                         <textarea placeholder="Message to AI" id="ai-description" rows="3" cols="35" class="umix-textarea form-control umix-ai-description umix-popup"></textarea>
                         <label class="form-label umix-popup">Type</label>
                         <select name="select-ai-field" id="select-ai-field" class="umix-select umix-popup form-control">
-                            <option value="css" name="css">css</option>
-                            <option value="javascript" name="javascript">javascript</option>
+                            <option value="css" name="css">CSS</option>
+                            <option value="javascript" name="javascript">Javascript</option>
                         </select>
                         <button class="umix-create-btn umix-ai-generate-btn  umix-popup btn btn-block btn-default">Generate CSS</button>
                     </div>
                     <div class="umix-content-container umix-popup">
                         <div class="title-header umix-popup">
+                            <label class="form-label umix-popup">Type</label>
                             <div class="umix-content-title umix-popup">Create Test</div>
                             <img src="`+imagePath+`/close.svg" class="umix-ai-icon umix-popup" style="width: 15px"/>
                         </div>
@@ -110,23 +187,30 @@ $(document).ready(function (){
                                 <li class="umix-tab-links umix-popup variant-a active"><a href="#variantA" data-toggle="tab" class="umix-popup">Variant A</a></li>
                                 <li class="umix-tab-links umix-popup variant-b"><a href="#variantB" data-toggle="tab" class="umix-popup">Variant B</a></li>
                             </ul>
+                            <label class="form-label umix-popup">Variant Name</label>
+                            <input type="text" id="VariantA_name" name="original_name" placeholder="Original Name" class="form-control umix-popup">
+                            <input type="text" id="VariantB_name" name="variant_name" placeholder="Variant Name" class="form-control umix-popup" style="display: none;">
                             <div id="myTabContent" class="tab-content">
                                 <div class="tab-pane active in" id="variantA">
                                     <div class="umix-tab-content umix-popup">
+                                        <label class="form-label umix-popup">Type</label>
                                         <select name="select-tabA" id="select-tabA" class="umix-select umix-input-title  umix-popup">
-                                            <option value="css" name="css">css</option>
-                                            <option value="javascript" name="javascript">javascript</option>
+                                            <option value="css" id="tabA_css" name="css">CSS</option>
+                                            <option value="javascript" id="tabA_js" name="javascript">Javascript</option>
                                         </select>
-                                        <textarea id="descriptionA" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
+                                        <textarea id="descriptionA_css" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
+                                        <textarea id="descriptionA_js" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control" style="display: none;"></textarea>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="variantB">
                                     <div class="umix-tab-content umix-popup">
+                                        <label class="form-label umix-popup">Type</label>
                                         <select name="select-tabB" id="select-tabB" class="umix-select umix-input-title  umix-popup">
-                                            <option value="css" name="css">css</option>
-                                            <option value="javascript" name="javascript">javascript</option>
+                                            <option value="css" id="tabB_css" name="css">CSS</option>
+                                            <option value="javascript" id="tabB_js" name="javascript">Javascript</option>
                                         </select>
-                                        <textarea id="descriptionB" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
+                                        <textarea id="descriptionB_css" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control"></textarea>
+                                        <textarea id="descriptionB_js" rows="6" cols="35" class="umix-textarea umix-ai-description  umix-popup form-control" style="display: none;"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +223,7 @@ $(document).ready(function (){
             <div class="view-container umix-popup" style="display: none;">
                 <button class="back-test umix-popup">Back</button>
                 <br>
-                <div class="test-title umix-popup"></div>
+                <div class="test-title umix-popup">`+viewData_title+`</div>
                 <canvas id="conversion" class="m-1 rounded" height = "220" style="background-color:#E9E9E9"></canvas>
                 <canvas id="event" class="m-1 rounded" height = "220" style="background-color:#E9E9E9"></canvas>
                 <canvas id="bounce" class="m-1 rounded" height = "220" style="background-color:#E9E9E9"></canvas>
@@ -215,8 +299,10 @@ $(document).ready(function (){
             chrome.runtime.sendMessage({message: 'tests', payload: {"token":temp.access_token}}, response => {
                 if(response){
                     // $(".test-title").html()
+                    console.log("RESPONSE", response);
                     $(".menu-container").css("display", "none");
                     response.forEach((element, index) => {
+                        console.log("view-data view-btn-",index, `view-btn-`,index);
                         let str = `<div class="card m-1 test-data umix-popup">
                             <div class="card-body umix-popup">
                             <h5 class="card-title umix-popup">`+element.title+`</h5>
@@ -228,14 +314,19 @@ $(document).ready(function (){
                         $(".test-body").append(str);
                         $(".test-container").css("display","block");
                         $(".view-btn-"+index).click(function(){
+                            console.log("each button",".view-btn-"+index);
                             var record_id = $(this).attr("data-record");
-                            chrome.runtime.sendMessage({message: 'view', payload: {record_id, temp}}, response => {
+                            console.log("Record ID", record_id, temp.access_token);
+                            chrome.runtime.sendMessage({message: 'view', payload: {record_id,temp}}, response => {
+                                console.log("response",response);
                                 if(response.detail){
                                     $(".error-view-"+index).html(response.detail);
                                     $(".error-view-"+index).css("color","red");
                                 }else{
                                     $(".view-container").css("display","block");
                                     $(".test-container").css("display","none");
+                                    viewData_title = response.test_name;
+                                    console.log("TITLE",viewData_title);
                                     var conversionSet = getData(JSON.parse(response.data), "conversion");
                                     const conversion = $("#conversion");
                                     new Chart(conversion, {
@@ -446,6 +537,8 @@ $(document).ready(function (){
         $(".umix-ai-container").css("display","none");
         $(".menu-container").css("display","none");
         $(".test-container").css("display", "none");
+        console.log("WHY");
+        $("#descriptionA_js").css("display","none");
     });
     $("#select-ai-field").change(function(){
         if($("#select-ai-field").val() == "css"){
@@ -478,8 +571,10 @@ $(document).ready(function (){
         }
     });
     $(".cursor-btn").click(function () {
-        $(".umix-content-container").css("display","none");
-        $(".umix-ai-container").css("display","block");
+        // $(".umix-content-container").css("display","none");
+        // $(".umix-ai-container").css("display","block");
+        $(".umix-content-container").css("display","block");
+        $(".umix-ai-container").css("display","none");
         const currentToggle = localStorage.getItem("toggle");
         localStorage.setItem("toggle", currentToggle === "true" ? "false" : "true");
         isOn = !isOn;
@@ -495,33 +590,91 @@ $(document).ready(function (){
             selectedElement = null;
         }
     });
-    
-    $(".umix-ai-create-btn").click(function () {
-        var title = $("#name").val();
-        var type, description  = "";
-        if(currentTabId == "tabA"){
-            type = $("#select-tabA").val();
-            description = $("#descriptionA").val();
-        }else{
-            type = $("#select-tabB").val();
-            description = $("#descriptionB").val();
+    $("#select-tabA").click(function(){
+        if($("#select-tabA").val() == "css"){
+            $("#descriptionA_js").css("display","none");
+            $("#descriptionA_css").css("display","block");
         }
-        // var inputTitle = $(".umix-input-title").val();
-        // currentTextAreaAStr = $(".umix-textarea").val();
-        if (inputTitle && currentTextAreaAStr) {
+        else{
+            $("#descriptionA_js").css("display","block");
+            $("#descriptionA_css").css("display","none");
+        }
+    })
+    $("#select-tabB").click(function(){
+        if($("#select-tabB").val() == "css"){
+            $("#descriptionB_js").css("display","none");
+            $("#descriptionB_css").css("display","block");
+        }
+        else{
+            $("#descriptionB_js").css("display","block");
+            $("#descriptionB_css").css("display","none");
+        }
+    })
+    
+    document.getElementById("descriptionA_css").addEventListener("input",handleCSSCodeChange_A);
+    document.getElementById("descriptionB_css").addEventListener("input",handleCSSCodeChange_B);
+    function handleCSSCodeChange_A(){
+        // console.log("real-time");
+        var cssCode;
+        cssCode = $("#descriptionA_css").val();
+        const styleElement = document.createElement('style');
+        styleElement.textContent = cssCode;
+        console.log("CSS Code", styleElement);
+        document.head.appendChild(styleElement);
+    }
+    function handleCSSCodeChange_B(){
+        // console.log("real-time");
+        var cssCode;
+        cssCode = $("#descriptionB_css").val();
+        const styleElement = document.createElement('style');
+        styleElement.textContent = cssCode;
+        console.log("CSS Code", styleElement);
+        document.head.appendChild(styleElement);
+    }
+    $(".umix-ai-create-btn").click(function () {
+        const form_data = new Object({
+            "name": $("#name").val(),
+            "description": "chrome_extension",
+            "id" : `ex${Date.now()}`,
+            "sampleRate" : 1,
+            "trigger" : "function (test) { if (document.location.pathname === '/') test.activate(); }",
+            "Original": {
+                "variantName": "Original",
+                "codeCSS": $("#descriptionA_css").val(),
+                "codeJS": $("#descriptionA_js").val()
+            },
+            "Variant": {
+                "variantName": "Variant",
+                "codeCSS": $("#descriptionB_css").val(),
+                "codeJS": $("#descriptionB_js").val()
+            }
+        })
+        const data = constructTest(form_data);
+        console.log("form and mojito", data, form_data);
+
+        var title = $("#name").val();
+        var description = $("#descriptionA_css").val();
+        if(title && description)
+        {
+            // const cssCode = $("#descriptionA_css").val();
+            // const styleElement = document.createElement('style');
+            // styleElement.textContent = cssCode;
+            // document.head.appendChild(styleElement);
+            const is_live = false;
+            const original_variant = "body";
+            const variant_variant = "body";
             chrome.storage.local.get("access_token").then((temp) =>{
                 chrome.runtime.sendMessage({message: 'createTest', payload: {
                     token: temp, 
                     data: JSON.stringify({
-                        title: title,
-                        type: type,
-                        data: description,
-                        is_live: false
+                        title, data
                     })
                 }
+                
             }, response => {
                     console.log(response);
                 }
+            
             )})
         }
     });
@@ -531,10 +684,16 @@ $(document).ready(function (){
             currentTabId = "tabA";
             $(".variant-b").removeClass("active");
             $(".variant-a").addClass("active");
+            $("#VariantA_name").css("display","block");
+            $("#VariantB_name").css("display","none");
+            handleCSSCodeChange_A();
         }else{
             currentTabId = "tabB";
             $(".variant-a").removeClass("active");
             $(".variant-b").addClass("active");
+            $("#VariantA_name").css("display","none");
+            $("#VariantB_name").css("display","block");
+            handleCSSCodeChange_B();
         }
     });
     
@@ -697,62 +856,82 @@ document.addEventListener("dblclick", (e) => {
         currentPopup.remove();
         currentPopup = null;
     }
+    const selected = e.target.className;
+    const cssClasses = selected.split(" ");
+    // const cssClassString = ".";
+    // for (var i = 0; i < cssClasses.length; i++) {
+    //     console.log("index", cssClasses.length, cssClasses[i]);
+    //     cssClassString += cssClasses[i];
+    //     console.log("Value", cssClassString);
+    // }
+    const convertedString = "." + cssClasses.join(".");
+    const autoAdd = convertedString + " {\n\n}";
+    // const cssClassName = selected.replace(" ",".");
+    console.log("ClassName", e.target ,"cl",
+    e.target.className);
+    if(currentTabId == "tabA"){
+        $("#descriptionA_css").val(autoAdd);
+    }else{  
+        $("#descriptionB_css").val(autoAdd);
+    }
+    selectedElement.classList.add("highlight-on-hover");
 
     // defines text area, button, and popup
-    const select = document.createElement("select");
-    const opt1 =  document.createElement("option");
-    opt1.value = "css";
-    opt1.innerHTML  = "css";
-    const opt2 =  document.createElement("option");
-    opt2.value = "html";
-    opt2.innerHTML  = "html";
-    select.append(opt1);
-    select.append(opt2);
-    const input = document.createElement("textarea");
-    const button = document.createElement("button");
-    const popup = document.createElement("div");
+    // const select = document.createElement("select");
+    // const opt1 =  document.createElement("option");
+    // opt1.value = "css";
+    // opt1.innerHTML  = "css";
+    // const opt2 =  document.createElement("option");
+    // opt2.value = "html";
+    // opt2.innerHTML  = "html";
+    // select.append(opt1);
+    // select.append(opt2);
+    // const input = document.createElement("textarea");
+    // const button = document.createElement("button");
+    // const popup = document.createElement("div");
 
-    popup.className = "umix-popup umix-container";
-    button.className = "umix-popup umix-button form-control";
-    input.className = "umix-popup umix-input form-control";
-    select.className = "umix-popup umix-select form-control";
-    input.placeholder =
-        "Make the text larger or change the colors of this element.";
-    input.style.color = "black";
-    button.style.color = "black";
-    popup.style.position = "fixed";
-    const x = e.clientX;
-    const y = e.clientY;
-    popup.style.left = `${x}px`;
-    popup.style.top = `${y}px`;
-    popup.style.zIndex = "99999";
+    // popup.className = "umix-popup umix-container";
+    // button.className = "umix-popup umix-button form-control";
+    // input.className = "umix-popup umix-input form-control";
+    // select.className = "umix-popup umix-select form-control";
+    // input.placeholder =
+    //     "Make the text larger or change the colors of this element.";
+    // input.style.color = "black";
+    // button.style.color = "black";
+    // popup.style.position = "fixed";
+    // const x = e.clientX;
+    // const y = e.clientY;
+    // popup.style.left = `${x}px`;
+    // popup.style.top = `${y}px`;
+    // popup.style.zIndex = "99999";
 
-    const buttonText = `Generate AI`;
+    // const buttonText = `Generate AI`;
 
-    const callback = () => {
-        if (!isOn) return;
-        currentEl.classList.remove("highlight-on-hover");
-        button.textContent = "Loading...";
-        chrome.runtime.sendMessage({message: 'html', payload: {data: JSON.stringify({
-                html: currentEl.outerHTML,
-                description: input.value,
-            })}}, response => {
-                try {
-                let html = extractHtmlContent(response.output.output);
-                plusBtn.dispatchEvent(new Event('click'));
-                html = cleanHtml(html);
-                textAreaA.value = html;
+    // const callback = () => {
+    //     if (!isOn) return;
+    //     currentEl.classList.remove("highlight-on-hover");
+    //     button.textContent = "Loading...";
+    //     chrome.runtime.sendMessage({message: 'html', payload: {data: JSON.stringify({
+    //             html: currentEl.outerHTML,
+    //             description: input.value,
+    //         })}}, response => {
+    //             try {
+    //             let html = extractHtmlContent(response.output.output);
+    //             plusBtn.dispatchEvent(new Event('click'));
+    //             html = cleanHtml(html);
+    //             textAreaA.value = html;
 
-                const fragment = document.createElement("div");
-                fragment.innerHTML = html;
-                button.innerHTML = buttonText;
+    //             const fragment = document.createElement("div");
+    //             fragment.innerHTML = html;
+    //             button.innerHTML = buttonText;
 
-                currentEl.replaceWith(fragment);
-                currentEl = fragment;
-            } catch (error) {
-                console.error(error);
-            }
-        })
+    //             currentEl.replaceWith(fragment);
+    //             currentEl = fragment;
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     })
+
         // fetch(`http://localhost:3001/html`, {
         //     method: "POST",
         //     headers: {
@@ -784,24 +963,25 @@ document.addEventListener("dblclick", (e) => {
         //     .catch((error) => {
         //         console.error(error);
         //     });
-    };
+        
+    // };
 
-    input.onkeypress = (event) => {
-        if (!isOn) return;
-        if (event.key === "Enter") {
-            event.preventDefault(); // Enter no longer makes a new line
-            callback();
-        }
-    };
+    // input.onkeypress = (event) => {
+    //     if (!isOn) return;
+    //     if (event.key === "Enter") {
+    //         event.preventDefault(); // Enter no longer makes a new line
+    //         callback();
+    //     }
+    // };
 
-    button.onclick = callback;
-    button.innerHTML = buttonText;
-    popup.appendChild(select);
-    popup.appendChild(input);
-    popup.appendChild(button);
+    // button.onclick = callback;
+    // button.innerHTML = buttonText;
+    // popup.appendChild(select);
+    // popup.appendChild(input);
+    // popup.appendChild(button);
 
-    document.body.appendChild(popup);
+    // document.body.appendChild(popup);
 
-    currentPopup = popup;
-    currentEl.classList.add("highlight-on-hover");
+    // currentPopup = popup;
+    // currentEl.classList.add("highlight-on-hover");
 });

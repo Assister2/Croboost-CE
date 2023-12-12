@@ -3,6 +3,7 @@ var apiUrl = "https://api.croboost.ai/v1/";
 
 chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) {
     if (message.message === "login") {
+        
         fetch(apiUrl + 'auth/manual/login', {
             method: 'POST',
             headers: {
@@ -47,10 +48,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
         })
     }
     if (message.message === "view") {
+        console.log("Payload",message.payload);
         fetch(apiUrl+'metrics/'+message.payload.record_id, {
             method: 'GET',
             headers: {
-                'Authorization': "Bearer "+ message.payload.temp.access_token
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${message.payload.temp.access_token}`,
+                // 'Authorization': "Bearer "+ message.payload.temp.access_token
             },
         }).then(res => {
             return res.json();
@@ -60,11 +64,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
     }
 
     if (message.message === "createTest") {
+        console.log("Creating", message, "sender", sender, "senderResponse", senderResponse);
         console.log(message.payload.data);
         fetch(apiUrl+'ab/tests/', {
             method: 'POST',
             headers: {
-                'Authorization': "Bearer "+ message.payload.token.access_token
+                // 'Authorization': "Bearer "+ message.payload.token.access_token
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${message.payload.token.access_token}`,
             },
             body: message.payload.data
         }).then(res => {
