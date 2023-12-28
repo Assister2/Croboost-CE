@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, senderResponse) 
     }
 
     if (message.message === "createTest") {
-        console.log("Creating", message, "sender", sender, "senderResponse", senderResponse);
+        // console.log("Creating", message, "sender", sender, "senderResponse", senderResponse);
         console.log(message.payload.data);
         fetch(apiUrl+'ab/tests/', {
             method: 'POST',

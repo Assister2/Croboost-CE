@@ -176,7 +176,6 @@ $(document).ready(function (){
                     </div>
                     <div class="umix-content-container umix-popup">
                         <div class="title-header umix-popup">
-                            <label class="form-label umix-popup">Type</label>
                             <div class="umix-content-title umix-popup">Create Test</div>
                             <img src="`+imagePath+`/close.svg" class="umix-ai-icon umix-popup" style="width: 15px"/>
                         </div>
